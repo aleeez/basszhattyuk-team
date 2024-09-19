@@ -1,0 +1,7 @@
+dev:
+  url: "jdbc:mysql://localhost:"
+  username: "cseKa"
+  password: "bassztrabant"
+  database: "bassz_dev"
+  poolSize: 10
+  driver: "com.mysql.cj.jdbc.Driver"
