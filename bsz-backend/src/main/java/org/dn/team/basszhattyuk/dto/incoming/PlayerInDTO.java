@@ -1,15 +1,10 @@
-package org.dn.team.basszhattyuk.model;
+package org.dn.team.basszhattyuk.dto.incoming;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-@Entity
-@Table(name = "dev_players")
-public class PlayerModel extends BaseModel {
+public class PlayerInDTO {
 
     private String lastName;
     private String firstName;
