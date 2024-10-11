@@ -10,6 +10,6 @@ public class Hello {
 
     @GetMapping("/hello")
     public String sayHello() {
-        return "Hello, World!";
+        return "Hello, BasszHattyúk";
     }
 }
