@@ -1,5 +1,5 @@
 import React from "react";
-import { useHelloWorld } from "../hooks/useHello"; // Adjust the path as needed
+import { useHelloWorld } from "../hooks/useHello";
 
 const HelloWorld: React.FC = () => {
   const { data, isLoading } = useHelloWorld();
