@@ -1,13 +1,13 @@
 export interface PlayerType {
     id?: number,
-    lastname: string,
-    firstname: string,
-    phone: string,
+    lastName: string,
+    firstName: string,
+    phoneNr: string,
     email: string,
     seriaNr: string,
     fbLink: string,
     external: boolean,
     kmdszID: string,
     passPic: string,
-    studPic: string
+    studIDPic: string
 }
