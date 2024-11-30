@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -45,5 +47,11 @@ public class FileService {
         }
 
         return "File upload failed: Unable to save file to the server.";
+    }
+
+    public byte[] downloadImage(String fileName) throws IOException {
+        Optional<FileData> fileData = repository.findByFileName(fileName);
+        String filePath = fileData.map(FileData::getFilePath).orElse("Default file path or error message");
+        return Files.readAllBytes(new File(filePath).toPath());
     }
 }

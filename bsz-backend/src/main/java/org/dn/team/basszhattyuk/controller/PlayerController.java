@@ -84,4 +84,12 @@ public class PlayerController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
+
+    @GetMapping("/downloadPassPic/{fileName}")
+    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
+        byte[] imageData = fileService.downloadImage(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+    }
 }
