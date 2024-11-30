@@ -7,12 +7,16 @@ import org.dn.team.basszhattyuk.dto.outgoing.PlayerAdminDTO;
 import org.dn.team.basszhattyuk.mapper.PlayerMapper;
 import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.dn.team.basszhattyuk.repository.PlayerDAO;
+import org.dn.team.basszhattyuk.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +30,9 @@ public class PlayerController {
 
     @Autowired
     private PlayerMapper playerMapper;
+
+    @Autowired
+    private FileService fileService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PlayerAdminDTO createPlayer(@RequestBody @Valid PlayerInDTO playerDTO) {
@@ -69,5 +76,12 @@ public class PlayerController {
     public void deleteGuide(@PathVariable Long id) {
         log.info("Deleting player with id: {}", id);
         playerDAO.deleteById(id);
+    }
+
+    @PostMapping("/uploadPassPic")
+    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image") MultipartFile file) throws IOException {
+        String uploadImage = fileService.uploadImage(file);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
     }
 }

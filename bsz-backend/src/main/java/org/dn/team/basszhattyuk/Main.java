@@ -12,6 +12,7 @@ public class Main {
         System.setProperty("DB_URL", dotenv.get("DB_URL"));
         System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
         System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+        System.setProperty("PASS_PICS", dotenv.get("PASS_PICS"));
 
         SpringApplication.run(Main.class, args);
     }

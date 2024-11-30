@@ -7,6 +7,9 @@ spring:
     hikari:
       maximum-pool-size: 30
 
+  file-source:
+    pass-pics: ${PASS_PICS}
+
   jpa:
     hibernate:
       ddl-auto: update
