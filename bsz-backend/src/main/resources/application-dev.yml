@@ -9,6 +9,7 @@ spring:
 
   file-source:
     pass-pics: ${PASS_PICS}
+    stud-pics: ${STUD_PICS}
 
   jpa:
     hibernate:

@@ -78,12 +78,12 @@ public class PlayerController {
         playerDAO.deleteById(id);
     }
 
-    @PostMapping("/uploadPassPic")
-    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image") MultipartFile file) throws IOException {
-        String uploadImage = fileService.uploadImage(file);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(uploadImage);
-    }
+//    @PostMapping("/uploadPassPic")
+//    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image") MultipartFile file) throws IOException {
+//        String uploadImage = fileService.uploadImage(file);
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(uploadImage);
+//    }
 
     @GetMapping("/downloadPassPic/{fileName}")
     public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {

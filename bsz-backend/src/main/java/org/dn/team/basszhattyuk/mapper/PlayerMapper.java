@@ -3,6 +3,7 @@ package org.dn.team.basszhattyuk.mapper;
 import org.dn.team.basszhattyuk.dto.incoming.PlayerInDTO;
 import org.dn.team.basszhattyuk.dto.outgoing.PlayerAdminDTO;
 import org.dn.team.basszhattyuk.dto.outgoing.PlayerKmdszDTO;
+import org.dn.team.basszhattyuk.dto.outgoing.PlayerSelfDTO;
 import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.mapstruct.Mapper;
 
@@ -17,6 +18,7 @@ public interface PlayerMapper {
     // outgoing data
     PlayerAdminDTO mapToPlayerAdminDto(PlayerModel player);
     PlayerKmdszDTO mapToPlayerKmdszDto(PlayerModel player);
+    PlayerSelfDTO mapToPlayerSelfDto(PlayerModel player);
 
     // outgoing data
     List<PlayerAdminDTO> mapToPlayersAdminDto(List<PlayerModel> players);

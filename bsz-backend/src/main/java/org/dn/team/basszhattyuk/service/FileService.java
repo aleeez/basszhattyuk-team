@@ -21,32 +21,58 @@ public class FileService {
     @Value("${spring.file-source.pass-pics}")
     private String passPicsDirectory;
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    @Value("${spring.file-source.stud-pics}")
+    private String studPicsDirectory;
 
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty, cannot upload.");
-        }
 
-        File directory = new File(passPicsDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
+    public String uploadImage(MultipartFile file, String fileCategory) throws IOException {
 
-        String filePath = passPicsDirectory + File.separator + file.getOriginalFilename();
+        String filePath = getPath(file, fileCategory);
+
+        // Save the file metadata to the database
         FileData fileData = repository.save(FileData.builder()
-                                      .fileName(file.getOriginalFilename())
-                                      .fileType(file.getContentType())
-                                      .filePath(filePath)
-                                      .build());
+                .fileName(file.getOriginalFilename())
+                .fileType(file.getContentType())
+                .filePath(filePath)
+                .fileCategory(fileCategory)
+                .build());
 
+        // Save the actual file to the directory
         File destinationFile = new File(filePath);
         file.transferTo(destinationFile);
 
+        // Verify that the file was successfully uploaded
         if (destinationFile.exists() && destinationFile.length() > 0) {
             return "File uploaded successfully: " + filePath;
         }
 
         return "File upload failed: Unable to save file to the server.";
+    }
+
+    private String getPath(MultipartFile file, String fileCategory) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty, cannot upload.");
+        }
+
+        // Determine the target directory based on fileCategory
+        String targetDirectory = null;
+
+        if ("pass".equalsIgnoreCase(fileCategory)) {
+            targetDirectory = passPicsDirectory;
+        } else if ("stud".equalsIgnoreCase(fileCategory)) {
+            targetDirectory = studPicsDirectory;
+        } else {
+            throw new IllegalArgumentException("Invalid file category. Must be either 'pass' or 'stud'.");
+        }
+
+        // Create the directory if it doesn't exist
+        File directory = new File(targetDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Generate the full file path
+        return targetDirectory + File.separator + file.getOriginalFilename();
     }
 
     public byte[] downloadImage(String fileName) throws IOException {

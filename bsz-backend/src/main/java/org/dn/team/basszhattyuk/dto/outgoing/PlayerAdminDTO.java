@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PlayerAdminDTO {
+
     private String lastName;
     private String firstName;
     private String phoneNr;

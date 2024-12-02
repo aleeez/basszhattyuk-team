@@ -1,11 +1,8 @@
-package org.dn.team.basszhattyuk.dto.incoming;
+package org.dn.team.basszhattyuk.dto.outgoing;
 
-import jakarta.persistence.Entity;
-import lombok.Data;
 import org.dn.team.basszhattyuk.model.FileData;
 
-@Data
-public class PlayerInDTO {
+public class PlayerSelfDTO {
 
     private String lastName;
     private String firstName;
