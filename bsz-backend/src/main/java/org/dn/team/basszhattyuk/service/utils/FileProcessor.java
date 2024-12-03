@@ -14,6 +14,7 @@ public class FileProcessor {
     @Value("${spring.file-source.stud-pics}")
     private static String studPicsDirectory;
 
+
     public void validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is empty or null, cannot process.");
@@ -31,13 +32,12 @@ public class FileProcessor {
         return appendTimestamp(sanitizedFileName);
     }
 
+
+
     public String generatePath(MultipartFile file, String fileCategory, String newFileName) {
 
         // Determine the target directory based on fileCategory
         String targetDirectory = getTargetDirectory(fileCategory);
-
-        // Generate target directory if it doesn't exist
-        generateDirectory(targetDirectory);
 
         // Generate the full file path
         return targetDirectory + File.separator + newFileName;
@@ -54,19 +54,11 @@ public class FileProcessor {
         }
     }
 
-    public void generateDirectory(String targetDirectory) {
-
-        // Create the directory if it doesn't exist
-        File directory = new File(targetDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-    }
-
 
     public String sanitizeFileName(String fileName) {
         return fileName.replaceAll("[^a-zA-Z0-9.\\-_]", "_");
     }
+
 
     public String appendTimestamp(String fileName) {
         String timestamp = String.valueOf(System.currentTimeMillis());
