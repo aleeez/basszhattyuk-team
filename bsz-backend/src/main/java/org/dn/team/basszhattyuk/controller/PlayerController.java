@@ -8,6 +8,7 @@ import org.dn.team.basszhattyuk.mapper.PlayerMapper;
 import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.dn.team.basszhattyuk.repository.PlayerDAO;
 import org.dn.team.basszhattyuk.service.FileService;
+import org.dn.team.basszhattyuk.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,17 +32,25 @@ public class PlayerController {
     @Autowired
     private PlayerMapper playerMapper;
 
+
     @Autowired
-    private FileService fileService;
+    private PlayerService playerService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PlayerAdminDTO createPlayer(@RequestBody @Valid PlayerInDTO playerDTO) {
-        log.info("Creating player: {}", playerDTO);
-        PlayerModel newPlayer = playerMapper.mapToPlayerModel(playerDTO);
-        playerDAO.save(newPlayer);
-        log.info("New player id: {}", newPlayer.getId());
-        return playerMapper.mapToPlayerAdminDto(newPlayer);
+    public ResponseEntity<String> createPlayer(@RequestPart("player") PlayerInDTO playerInDTO,
+                                       @RequestPart("passPic") MultipartFile passPic,
+                                       @RequestPart("studIdPic") MultipartFile studIdPic) {
+        log.info("Creating player: {}", playerInDTO);
+        PlayerModel newPlayer = playerMapper.mapToPlayerModel(playerInDTO);
+        try {
+            PlayerModel savedPlayer = playerService.savePlayer(newPlayer, passPic, studIdPic);
+            return new ResponseEntity<>("Player saved successfully with ID: " + savedPlayer.getId(), HttpStatus.CREATED);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error uploading files or saving player: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
+
 
     @GetMapping("/{id}")
     public PlayerAdminDTO getPlayerById(@PathVariable Long id) {
@@ -78,18 +87,4 @@ public class PlayerController {
         playerDAO.deleteById(id);
     }
 
-//    @PostMapping("/uploadPassPic")
-//    public ResponseEntity<?> uploadImageToFIleSystem(@RequestParam("image") MultipartFile file) throws IOException {
-//        String uploadImage = fileService.uploadImage(file);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(uploadImage);
-//    }
-
-    @GetMapping("/downloadPassPic/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
-        byte[] imageData = fileService.downloadImage(fileName);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
-    }
 }
