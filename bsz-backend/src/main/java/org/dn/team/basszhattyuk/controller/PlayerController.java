@@ -37,10 +37,10 @@ public class PlayerController {
     private PlayerService playerService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createPlayer(@RequestPart("player") PlayerInDTO playerInDTO,
-                                       @RequestPart("passPic") MultipartFile passPic,
-                                       @RequestPart("studIdPic") MultipartFile studIdPic) {
+    public ResponseEntity<String> createPlayer(@Valid @ModelAttribute PlayerInDTO playerInDTO) {
         log.info("Creating player: {}", playerInDTO);
+        MultipartFile passPic = playerInDTO.getPassPic();
+        MultipartFile studIdPic = playerInDTO.getStudIDPic();
         PlayerModel newPlayer = playerMapper.mapToPlayerModel(playerInDTO);
         try {
             PlayerModel savedPlayer = playerService.savePlayer(newPlayer, passPic, studIdPic);
