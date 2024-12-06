@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @Profile("dev")
-public interface DevFileRepository extends JpaRepository<FileData, Integer> {
+public interface DevFileRepository extends JpaRepository<FileData, Long> {
 
     Optional<FileData> findByFileName(String fileName);
 }

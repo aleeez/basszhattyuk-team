@@ -27,7 +27,7 @@ public class FileService {
 
 
     @Transactional(rollbackOn = {IOException.class, DataIntegrityViolationException.class, PersistenceException.class})
-    public String uploadImage(MultipartFile file, String fileCategory) throws IOException {
+    public FileData uploadImage(MultipartFile file, String fileCategory) throws IOException {
 
         // Validate the file and its name
         fileProcessor.validateFile(file);
@@ -40,35 +40,27 @@ public class FileService {
 
         // Save the file metadata to the database
         try {
-            repository.save(FileData.builder()
+            FileData savedFileData = repository.save(FileData.builder()
                     .fileName(uniqueFileName)
                     .fileType(file.getContentType())
                     .filePath(filePath)
                     .fileCategory(fileCategory)
                     .build());
-        } catch (DataIntegrityViolationException | PersistenceException e) {
 
-            log.error("Error saving file metadata: {}", e.getMessage());
-            log.info("Transaction rollback triggered.");
-            throw new RuntimeException("Error saving file metadata", e);
-        }
+            // Save the actual file to the directory
+            File destinationFile = new File(filePath);
 
-        // Save the actual file to the directory
-        File destinationFile = new File(filePath);
-        try {
             file.transferTo(destinationFile);
+
+            return savedFileData;
+
+
         } catch (IOException e) {
             log.error("Failed to move file to directory: {}", filePath);
             log.info("Transaction rollback triggered.");
             throw new IOException("Failed to move file to directory: " + filePath, e);
         }
 
-        // Verify that the file was successfully uploaded
-        if (destinationFile.exists() && destinationFile.length() > 0) {
-            return "File uploaded successfully: " + filePath;
-        }
-
-        return "File upload failed: Unable to save file to the server.";
     }
 
 

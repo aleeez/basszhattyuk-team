@@ -41,6 +41,7 @@ public class PlayerController {
         log.info("Creating player: {}", playerInDTO);
         MultipartFile passPic = playerInDTO.getPassPic();
         MultipartFile studIdPic = playerInDTO.getStudIDPic();
+        log.info("---- uploading files ----: {}", passPic);
         PlayerModel newPlayer = playerMapper.mapToPlayerModel(playerInDTO);
         try {
             PlayerModel savedPlayer = playerService.savePlayer(newPlayer, passPic, studIdPic);

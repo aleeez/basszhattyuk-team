@@ -56,5 +56,6 @@ public class PlayerInDTO {
     @NotNull
     private MultipartFile passPic;
 
+    @NotNull
     private MultipartFile studIDPic;
 }

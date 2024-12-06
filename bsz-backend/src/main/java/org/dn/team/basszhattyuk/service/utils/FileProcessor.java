@@ -9,10 +9,10 @@ import java.io.File;
 public class FileProcessor {
 
     @Value("${spring.file-source.pass-pics}")
-    private static String passPicsDirectory;
+    private String passPicsDirectory;
 
     @Value("${spring.file-source.stud-pics}")
-    private static String studPicsDirectory;
+    private String studPicsDirectory;
 
 
     public void validateFile(MultipartFile file) {

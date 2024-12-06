@@ -26,13 +26,13 @@ public class PlayerService {
 
     @Transactional(rollbackOn = {IOException.class, DataIntegrityViolationException.class})
     public PlayerModel savePlayer(PlayerModel player, MultipartFile passPic, MultipartFile studIdPic) throws IOException {
-        String passPicResult = fileService.uploadImage(passPic, "pass");
-        String studIdPicResult = fileService.uploadImage(studIdPic, "stud");
+        FileData passPicResult = fileService.uploadImage(passPic, "pass");
+        FileData studIdPicResult = fileService.uploadImage(studIdPic, "stud");
 
         // Simulate file data retrieval
-        FileData passFileData = fileRepository.findByFileName(passPic.getOriginalFilename())
+        FileData passFileData = fileRepository.findById(passPicResult.getId())
                 .orElseThrow(() -> new IOException("File data not found for passPic"));
-        FileData studFileData = fileRepository.findByFileName(studIdPic.getOriginalFilename())
+        FileData studFileData = fileRepository.findById(studIdPicResult.getId())
                 .orElseThrow(() -> new IOException("File data not found for studIdPic"));
 
         player.setPassPic(passFileData);
