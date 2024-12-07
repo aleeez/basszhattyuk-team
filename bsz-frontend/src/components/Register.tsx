@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlayerType } from '../dto/PlayerType';
 import { useCreatePlayer, useUpdatePlayer } from '../hooks/usePlayer';
+import { validateName, validatePhoneNumber, validateSeriaNr } from './validatation/InputValidation';
 
 const Register: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const createGuide = useCreatePlayer();
-  const updateGuide = useUpdatePlayer();
+  const createPlayer = useCreatePlayer();
+  const updatePlayer = useUpdatePlayer();
 
   const [formData, setFormData] = useState<PlayerType>({
     lastName: '',
@@ -21,22 +22,72 @@ const Register: React.FC = () => {
     studIDPic: ''
   });
 
+  const [tempData, setTempData] = useState({ 
+    seria: '',
+    nr: ''
+  });
+
+  const handleSeriaNr = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    let updatedValue = value;
+
+    updatedValue = validateSeriaNr(name, value);
+   
+    setTempData((prevTempData) => ({
+      ...prevTempData,
+      [name]: updatedValue
+    }));
+
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, type, checked, value } = event.target;
+    const { name, value, type, checked } = event.target;
+    
+    let updatedValue: string | boolean = value;
+
+
+    // Apply name validation for first and last names
+    if (name === 'firstName' || name === 'lastName') {
+      updatedValue = validateName(value);
+    }
+    
+    // Apply phone number validation for phoneNr
+    if (name === 'phoneNr') {
+      updatedValue = validatePhoneNumber(value);
+    }
+
+    // Apply phone number validation for phoneNr
+    if (type === 'checkbox') {
+
+      updatedValue = checked;
+  
+    }
+
+
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: updatedValue
     }));
+
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (id) {
-      updateGuide.mutate({ id, data: formData });
-    } else {
-      createGuide.mutate(formData);
-    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      seriaNr: `${tempData.seria}${tempData.nr}`.trim(),
+      phoneNr: formData.phoneNr.replace(/\s+/g, '')
+    }));
+
+    console.log(formData);
+
+    // if (id) {
+    //   updatePlayer.mutate({ id, data: formData });
+    // } else {
+    //   createPlayer.mutate(formData);
+    // }
   };
 
   return (
@@ -44,38 +95,40 @@ const Register: React.FC = () => {
       <p>Regisztrálj csapattagnak!</p>
       <form onSubmit={handleSubmit}>
         <label htmlFor="lastname">
-          Családnév:
-          <input type="text" id="lastname" name="lastName" value={formData.lastName} onChange={handleChange} />
+          Családnév: 
+          <input type="text" id="lastname" name="lastName" value={formData.lastName} onChange={handleChange} required/>
         </label>
         <br />
         <label htmlFor="firstname">
           Keresztnév:
-          <input type="text" id="firstname" name="firstName" value={formData.firstName} onChange={handleChange} />
+          <input type="text" id="firstname" name="firstName" value={formData.firstName} onChange={handleChange} required/>
         </label>
         <br />
         <label htmlFor="phone">
           Telefonszám:
-          <input type="text" id="phone" name="phoneNr" value={formData.phoneNr} onChange={handleChange} />
+          <input type="tel" id="phone" name="phoneNr" value={formData.phoneNr} onChange={handleChange} minLength={10} placeholder="07xx xxx xxx" required/>
         </label>
         <br />
         <label htmlFor="email">
           Email-cím:
-          <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} />
+          <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} placeholder="something@domain" required/>
         </label>
         <br />
         <label htmlFor="serianr">
-          Személyi szám (seria_nr):
-          <input type="text" id="serianr" name="seriaNr" value={formData.seriaNr} onChange={handleChange} />
+          Személyi szám: Seria
+          <input type="text" id="seria" name="seria" value={tempData.seria} onChange={handleSeriaNr} minLength={2} placeholder="XY" required/>
+          Nr.
+          <input type="text" id="nr" name="nr" value={tempData.nr} onChange={handleSeriaNr}  minLength={6} placeholder="123456" required/>
         </label>
         <br />
         <label htmlFor="fblink">
           Facebook link:
-          <input type="text" id="fblink" name="fbLink" value={formData.fbLink} onChange={handleChange} />
+          <input type="text" id="fblink" name="fbLink" value={formData.fbLink} onChange={handleChange} required/>
         </label>
         <br />
         <label htmlFor="external">
           Külsős vagy?:
-          <input type="checkbox" id="external" name="external" checked={formData.external} onChange={handleChange} />
+          <input type="checkbox" id="external" name="external" checked={formData.external} onChange={handleChange} required/>
         </label>
         <br />
         <label htmlFor="kmdszid">
