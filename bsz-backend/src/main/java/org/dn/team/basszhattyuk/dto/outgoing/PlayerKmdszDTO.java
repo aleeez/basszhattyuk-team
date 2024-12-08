@@ -1,5 +1,8 @@
 package org.dn.team.basszhattyuk.dto.outgoing;
 
+import lombok.Data;
+
+@Data
 public class PlayerKmdszDTO {
 
     private String lastName;

@@ -1,13 +1,14 @@
 package org.dn.team.basszhattyuk.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.dn.team.basszhattyuk.dto.incoming.PlayerInDTO;
 import org.dn.team.basszhattyuk.dto.outgoing.PlayerAdminDTO;
+import org.dn.team.basszhattyuk.dto.outgoing.PlayerSelfDTO;
 import org.dn.team.basszhattyuk.mapper.PlayerMapper;
 import org.dn.team.basszhattyuk.model.PlayerModel;
-import org.dn.team.basszhattyuk.repository.PlayerDAO;
-import org.dn.team.basszhattyuk.service.FileService;
+import org.dn.team.basszhattyuk.repository.dev.DevPlayerDAO;
 import org.dn.team.basszhattyuk.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/players")
@@ -27,7 +26,7 @@ import java.util.Optional;
 public class PlayerController {
 
     @Autowired
-    private PlayerDAO playerDAO;
+    private DevPlayerDAO playerDAO;
 
     @Autowired
     private PlayerMapper playerMapper;
@@ -53,21 +52,21 @@ public class PlayerController {
     }
 
 
-//    @GetMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<PlayerModel> getPlayerById(@PathVariable("id") Long id) {
-//        log.info("Fetching player with ID: {}", id);
-//
-//        // Fetch player from the service by ID
-//        PlayerModel player = playerService.getPlayerById(id);
-//
-//        if (player == null) {
-//            // Return 404 if the player is not found
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        // Return the player data if found
-//        return new ResponseEntity<>(player, HttpStatus.OK);
-//    }
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PlayerSelfDTO> getPlayerById(@PathVariable("id") Long id) {
+        log.info("Fetching player with ID: {}", id);
+
+        // Fetch player from the service by ID
+        PlayerModel player = playerService.getPlayer(id);
+
+        if (player == null) {
+            // Return 404 if the player is not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+           PlayerSelfDTO playerDTO = playerMapper.mapToPlayerSelfDto(player);
+
+        return new ResponseEntity<>(playerDTO, HttpStatus.OK);
+    }
 
 
     @GetMapping
@@ -88,9 +87,21 @@ public class PlayerController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGuide(@PathVariable Long id) {
-        log.info("Deleting player with id: {}", id);
-        playerDAO.deleteById(id);
+    public ResponseEntity<String> deletePlayer(@PathVariable("id") Long id) {
+        try {
+            // Call the deletePlayer service method
+            playerService.deletePlayer(id);
+            return new ResponseEntity<>("Player deleted successfully", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            // If the player is not found, return a 404 status
+            return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            // If there is an issue with file deletion, return a 500 status
+            return new ResponseEntity<>("Error while deleting files", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

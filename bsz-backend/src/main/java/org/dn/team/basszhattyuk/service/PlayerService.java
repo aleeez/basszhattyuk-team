@@ -1,5 +1,6 @@
 package org.dn.team.basszhattyuk.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.dn.team.basszhattyuk.model.FileData;
 import org.dn.team.basszhattyuk.model.PlayerModel;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class PlayerService {
@@ -45,6 +47,31 @@ public class PlayerService {
             // Handle or rethrow if necessary
             throw new RuntimeException("Data integrity violation while saving player", e);
         }
+    }
+
+    public PlayerModel getPlayer(Long id) {
+
+        return playerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Player not found"));
+    }
+
+    @Transactional(rollbackOn = {IOException.class })
+    public void deletePlayer(Long id) throws IOException {
+
+        PlayerModel player = playerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Player not found"));
+
+        try {
+            // Deleting the associated files
+            fileService.deleteFile(player.getPassPic());
+            fileService.deleteFile(player.getStudIDPic());
+        } catch (IOException e) {
+            // In case file deletion fails, the transaction will be rolled back automatically
+            throw new IOException("Error while deleting files", e);
+        }
+
+        // Deleting the player from the database
+        playerRepository.delete(player);
     }
 
 

@@ -1,9 +1,11 @@
 package org.dn.team.basszhattyuk.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.dn.team.basszhattyuk.model.FileData;
+import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.dn.team.basszhattyuk.repository.dev.DevFileRepository;
 import org.dn.team.basszhattyuk.service.utils.FileProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +62,37 @@ public class FileService {
             throw new IOException("Failed to move file to directory: " + filePath, e);
         }
 
+
     }
 
+    @Transactional
+    public void deleteFile(FileData fileData) throws IOException {
 
+        if (fileData == null) {
+            throw new IllegalArgumentException("FileData cannot be null");
+        }
+
+        try {
+            // Call the method to remove the file from the filesystem
+            fileProcessor.removeFile(fileData.getFilePath());
+        } catch (IOException e) {
+            // Log the error and rethrow to trigger rollback
+            log.error("Error deleting file from the filesystem: {}", fileData.getFilePath(), e);
+            throw new RuntimeException("Error deleting file from the filesystem", e);
+        }
+        try {
+
+            Long fileId = fileData.getId();
+            if (fileId == null) {
+                throw new IllegalArgumentException("FileData ID cannot be null");
+            }
+            repository.delete(fileData);
+            log.info("File metadata with ID {} deleted successfully", fileId);
+        } catch (Exception e) {
+            log.error("Error deleting file metadata", e);
+            throw new RuntimeException("Error deleting file metadata", e);
+        }
+    }
 
 
 

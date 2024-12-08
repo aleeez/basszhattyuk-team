@@ -1,11 +1,17 @@
 package org.dn.team.basszhattyuk.service.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
+@Slf4j
 public class FileProcessor {
 
     @Value("${spring.file-source.pass-pics}")
@@ -69,6 +75,32 @@ public class FileProcessor {
             return name + "_" + timestamp + extension;
         } else {
             return fileName + "_" + timestamp;
+        }
+    }
+
+    public void removeFile(String filePath) throws IOException {
+        // Ensure the file path is not null or empty
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IllegalArgumentException("File path cannot be null or empty");
+        }
+
+        // Convert the string path to a Path object
+        Path pathToFile = Paths.get(filePath);
+
+        // Check if the file exists before attempting deletion
+        if (Files.exists(pathToFile)) {
+            try {
+                // Delete the file
+                Files.delete(pathToFile);
+                log.info("File deleted successfully: {}", filePath);
+            } catch (IOException e) {
+                // Log the exception and rethrow if needed
+                log.error("Error deleting file: {}", filePath, e);
+                throw new IOException("Error deleting file", e);
+            }
+        } else {
+            // File does not exist, log a warning
+            log.warn("File not found, cannot delete: {}", filePath);
         }
     }
 }

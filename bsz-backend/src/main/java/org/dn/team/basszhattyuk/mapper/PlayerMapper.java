@@ -6,6 +6,7 @@ import org.dn.team.basszhattyuk.dto.outgoing.PlayerKmdszDTO;
 import org.dn.team.basszhattyuk.dto.outgoing.PlayerSelfDTO;
 import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ public interface PlayerMapper {
     // outgoing data
     PlayerAdminDTO mapToPlayerAdminDto(PlayerModel player);
     PlayerKmdszDTO mapToPlayerKmdszDto(PlayerModel player);
+
+    @Mapping(source = "passPic.filePath", target = "passPicURL")
+    @Mapping(source = "studIDPic.filePath", target = "studIDPicURL")
     PlayerSelfDTO mapToPlayerSelfDto(PlayerModel player);
 
     // outgoing data

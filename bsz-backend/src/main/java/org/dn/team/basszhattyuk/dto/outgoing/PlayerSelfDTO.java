@@ -1,7 +1,8 @@
 package org.dn.team.basszhattyuk.dto.outgoing;
 
-import org.dn.team.basszhattyuk.model.FileData;
+import lombok.Data;
 
+@Data
 public class PlayerSelfDTO {
 
     private String lastName;
@@ -12,6 +13,6 @@ public class PlayerSelfDTO {
     private String fbLink;
     private Boolean external;
     private String kmdszID;
-    private FileData passPic;
-    private FileData studIDPic;
+    private String passPicURL;
+    private String studIDPicURL;
 }
