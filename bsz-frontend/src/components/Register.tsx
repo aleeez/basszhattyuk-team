@@ -131,10 +131,12 @@ const Register: React.FC = () => {
           <input type="checkbox" id="external" name="external" checked={formData.external} onChange={handleChange} required/>
         </label>
         <br />
+        {!formData.external && (
         <label htmlFor="kmdszid">
           KMDSZ ID:
           <input type="text" id="kmdszid" name="kmdszID" value={formData.kmdszID} onChange={handleChange} />
         </label>
+        )}
         <br />
         <label htmlFor="pass">
           PASS kép:
