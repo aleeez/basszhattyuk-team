@@ -36,12 +36,12 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createPlayer(@Valid @ModelAttribute PlayerInDTO playerInDTO) {
         log.info("Creating player: {}", playerInDTO);
         MultipartFile passPic = playerInDTO.getPassPic();
         MultipartFile studIdPic = playerInDTO.getStudIDPic();
-        log.info("---- uploading files ----: {}", passPic);
+
         PlayerModel newPlayer = playerMapper.mapToPlayerModel(playerInDTO);
         try {
             PlayerModel savedPlayer = playerService.savePlayer(newPlayer, passPic, studIdPic);
@@ -53,17 +53,22 @@ public class PlayerController {
     }
 
 
-    @GetMapping("/{id}")
-    public PlayerAdminDTO getPlayerById(@PathVariable Long id) {
-        log.info("Getting player by id: {}", id);
-        Optional<PlayerModel> player = playerDAO.findById(id);
-        if (player.isPresent()) {
-            return playerMapper.mapToPlayerAdminDto(player.get());
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No player found with id: " + id);
-        }
-    }
+//    @GetMapping(value = "/players/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<PlayerModel> getPlayerById(@PathVariable("id") Long id) {
+//        log.info("Fetching player with ID: {}", id);
+//
+//        // Fetch player from the service by ID
+//        PlayerModel player = playerService.getPlayerById(id);
+//
+//        if (player == null) {
+//            // Return 404 if the player is not found
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//
+//        // Return the player data if found
+//        return new ResponseEntity<>(player, HttpStatus.OK);
+//    }
+
 
     @GetMapping
     public List<PlayerAdminDTO> getPlayersForAdmin() {

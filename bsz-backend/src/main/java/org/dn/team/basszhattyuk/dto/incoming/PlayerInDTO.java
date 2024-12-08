@@ -16,11 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class PlayerInDTO {
 
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters.")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name must contain only letters.")
     private String lastName;
 
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters.")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Last name must contain only letters.")
     private String firstName;
 
     @NotNull
