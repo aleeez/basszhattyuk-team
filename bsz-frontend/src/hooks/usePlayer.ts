@@ -15,13 +15,22 @@ export const usePlayers = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
   
-    return useMutation((newPlayer: PlayerType) => axios.post('http://localhost:8080/players', newPlayer), {
-      onSuccess: () => {
-        queryClient.invalidateQueries('players');
-        navigate('/');
-      },
-    });
+    return useMutation(
+      (newPlayer: PlayerType) =>
+        axios.post('http://localhost:8080/players/register', newPlayer, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('players');
+          navigate('/');
+        },
+      }
+    );
   };
+  
   
   export const useUpdatePlayer = () => {
     const navigate = useNavigate();

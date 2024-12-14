@@ -10,6 +10,7 @@ const Home: React.FC = () => {
             <HelloWorld />
             <Link to="/hello">Hello!</Link>
             <Link to="/register">Register here</Link>
+            <Link to="/profile">My profile</Link>
             </header>
         </div>
     );

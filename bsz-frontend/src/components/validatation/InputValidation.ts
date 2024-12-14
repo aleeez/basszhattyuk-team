@@ -27,7 +27,7 @@ export const validateName = (name: string): string => {
   };
 
 
-  export const validateSeriaNr = (name: string, value: string): string => {
+  export const validatePersonalNr = (name: string, value: string): string => {
     
     let regex = /^[A-Z]+$/
     if (name === 'seria') {

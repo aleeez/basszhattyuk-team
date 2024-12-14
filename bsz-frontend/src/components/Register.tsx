@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlayerType } from '../dto/PlayerType';
 import { useCreatePlayer, useUpdatePlayer } from '../hooks/usePlayer';
-import { validateName, validatePhoneNumber, validateSeriaNr } from './validatation/InputValidation';
+import { validateName, validatePhoneNumber, validatePersonalNr } from './validatation/InputValidation';
 
 const Register: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,21 +18,38 @@ const Register: React.FC = () => {
     fbLink: '',
     external: false,
     kmdszID: '',
-    passPic: '',
-    studIDPic: ''
+    passPic: null,
+    studIDPic: null
+
   });
 
   const [tempData, setTempData] = useState({ 
     seria: '',
-    nr: ''
+    nr: '',
+    kmdszID: ''
   });
 
-  const handleSeriaNr = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [file, setFile] = useState<{ passPic: File | null; studIDPic: File | null }>({
+    passPic: null,
+    studIDPic: null
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files: selectedFiles } = e.target;
+    if (selectedFiles && selectedFiles.length > 0) {
+      setFile((prevFiles) => ({
+        ...prevFiles,
+        [name]: selectedFiles[0]
+      }));
+    }
+  };
+
+  const handlePersonalNr = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     let updatedValue = value;
 
-    updatedValue = validateSeriaNr(name, value);
+    updatedValue = validatePersonalNr(name, value);
    
     setTempData((prevTempData) => ({
       ...prevTempData,
@@ -57,6 +74,7 @@ const Register: React.FC = () => {
       updatedValue = validatePhoneNumber(value);
     }
 
+
     // Apply phone number validation for phoneNr
     if (type === 'checkbox') {
 
@@ -78,16 +96,20 @@ const Register: React.FC = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       seriaNr: `${tempData.seria}${tempData.nr}`.trim(),
-      phoneNr: formData.phoneNr.replace(/\s+/g, '')
+      phoneNr: formData.phoneNr.replace(/\s+/g, ''),
+      kmdszID: `KMDSZ-${tempData.kmdszID}`.trim(),
+      passPic: file.passPic,
+      studIDPic: file.studIDPic
+  
     }));
 
     console.log(formData);
 
-    // if (id) {
-    //   updatePlayer.mutate({ id, data: formData });
-    // } else {
-    //   createPlayer.mutate(formData);
-    // }
+    if (id) {
+      updatePlayer.mutate({ id, data: formData });
+    } else {
+      createPlayer.mutate(formData);
+    }
   };
 
   return (
@@ -116,36 +138,36 @@ const Register: React.FC = () => {
         <br />
         <label htmlFor="serianr">
           Személyi szám: Seria
-          <input type="text" id="seria" name="seria" value={tempData.seria} onChange={handleSeriaNr} minLength={2} placeholder="XY" required/>
+          <input type="text" id="seria" name="seria" value={tempData.seria} onChange={handlePersonalNr} minLength={2} placeholder="XY" required/>
           Nr.
-          <input type="text" id="nr" name="nr" value={tempData.nr} onChange={handleSeriaNr}  minLength={6} placeholder="123456" required/>
+          <input type="text" id="nr" name="nr" value={tempData.nr} onChange={handlePersonalNr}  minLength={6} placeholder="123456" required/>
         </label>
         <br />
         <label htmlFor="fblink">
           Facebook link:
-          <input type="text" id="fblink" name="fbLink" value={formData.fbLink} onChange={handleChange} required/>
+          <input type="url" id="fblink" name="fbLink" value={formData.fbLink} onChange={handleChange} required/>
         </label>
         <br />
         <label htmlFor="external">
           Külsős vagy?:
-          <input type="checkbox" id="external" name="external" checked={formData.external} onChange={handleChange} required/>
+          <input type="checkbox" id="external" name="external" checked={formData.external} onChange={handleChange} />
         </label>
         <br />
         {!formData.external && (
         <label htmlFor="kmdszid">
-          KMDSZ ID:
-          <input type="text" id="kmdszid" name="kmdszID" value={formData.kmdszID} onChange={handleChange} />
+          KMDSZ ID: KMDSZ-
+          <input type="text" id="kmdszid" name="kmdszID" value={tempData.kmdszID} onChange={handlePersonalNr} minLength={6} placeholder="123456" />
         </label>
         )}
         <br />
         <label htmlFor="pass">
           PASS kép:
-          <input type="text" id="pass" name="passPic" value={formData.passPic} onChange={handleChange} />
+          <input type="file" id="pass" name="passPic" onChange={handleFileChange} required/>
         </label>
         <br />
         <label htmlFor="studid">
           Ellenőrző kép:
-          <input type="text" id="studid" name="studIDPic" value={formData.studIDPic} onChange={handleChange} />
+          <input type="file" id="studid" name="studIDPic" onChange={handleFileChange} required/>
         </label>
         <br />
         <button type="submit">Save</button>

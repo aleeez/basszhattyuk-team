@@ -1,5 +1,5 @@
-export interface PlayerType {
-    id?: number,
+export interface PlayerUpdateDTO {
+    
     lastName: string,
     firstName: string,
     phoneNr: string,
@@ -8,6 +8,5 @@ export interface PlayerType {
     fbLink: string,
     external: boolean,
     kmdszID: string,
-    passPic: File | null,
-    studIDPic: File | null
+ 
 }
