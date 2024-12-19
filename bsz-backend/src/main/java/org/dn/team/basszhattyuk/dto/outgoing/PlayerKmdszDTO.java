@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class PlayerKmdszDTO {
 
+    private Long id;
     private String lastName;
     private String firstName;
     private String seriaNr;

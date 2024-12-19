@@ -26,6 +26,8 @@ dependencies {
     implementation group: 'io.github.cdimascio', name: 'dotenv-java', version: '3.0.0'
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
     implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
+    implementation group: 'com.github.java-json-tools', name: 'json-patch', version: '1.13'
+
 
 
     testImplementation platform('org.junit:junit-bom:5.10.0')

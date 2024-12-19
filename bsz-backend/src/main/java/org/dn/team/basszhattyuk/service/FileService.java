@@ -1,11 +1,9 @@
 package org.dn.team.basszhattyuk.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.dn.team.basszhattyuk.model.FileData;
-import org.dn.team.basszhattyuk.model.PlayerModel;
 import org.dn.team.basszhattyuk.repository.dev.DevFileRepository;
 import org.dn.team.basszhattyuk.service.utils.FileProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,7 @@ public class FileService {
     private FileProcessor fileProcessor;
 
 
+    // uploads image to filesystem and saves its metadata into database
     @Transactional(rollbackOn = {IOException.class, DataIntegrityViolationException.class, PersistenceException.class})
     public FileData uploadImage(MultipartFile file, String fileCategory) throws IOException {
 
@@ -65,7 +64,7 @@ public class FileService {
 
     }
 
-    @Transactional
+    @Transactional(rollbackOn = {IOException.class})
     public void deleteFile(FileData fileData) throws IOException {
 
         if (fileData == null) {
@@ -73,28 +72,22 @@ public class FileService {
         }
 
         try {
-            // Call the method to remove the file from the filesystem
+            // removes file from filesystem
             fileProcessor.removeFile(fileData.getFilePath());
         } catch (IOException e) {
-            // Log the error and rethrow to trigger rollback
             log.error("Error deleting file from the filesystem: {}", fileData.getFilePath(), e);
+            log.info("Transaction rollback triggered");
             throw new RuntimeException("Error deleting file from the filesystem", e);
         }
-        try {
 
-            Long fileId = fileData.getId();
-            if (fileId == null) {
-                throw new IllegalArgumentException("FileData ID cannot be null");
-            }
-            repository.delete(fileData);
-            log.info("File metadata with ID {} deleted successfully", fileId);
-        } catch (Exception e) {
-            log.error("Error deleting file metadata", e);
-            throw new RuntimeException("Error deleting file metadata", e);
+        // removes metadata from database
+        Long fileId = fileData.getId();
+        if (fileId == null) {
+            throw new IllegalArgumentException("FileData ID cannot be null");
         }
+        repository.delete(fileData);
+        log.info("File metadata with ID {} deleted successfully", fileId);
+
     }
-
-
-
 
 }

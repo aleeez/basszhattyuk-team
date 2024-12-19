@@ -1,10 +1,12 @@
 package org.dn.team.basszhattyuk.config;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import java.io.File;
 
+@Slf4j
 @Configuration
 public class DirectoryConfig {
 
@@ -16,8 +18,7 @@ public class DirectoryConfig {
 
     @PostConstruct
     public void createDirectories() {
-        System.out.println("\n\n\nPass Pics Directory: " + passPicsDirectory);
-        System.out.println("\n\n\nStud Pics Directory: " + studPicsDirectory);
+
         createDirectory(passPicsDirectory);
         createDirectory(studPicsDirectory);
     }
@@ -27,7 +28,7 @@ public class DirectoryConfig {
         if (!directory.exists()) {
             boolean created = directory.mkdirs();
             if (created) {
-                System.out.println("Directory created: " + directoryPath);
+                log.info("Directory created: {}", directoryPath);
             } else {
                 throw new RuntimeException("Failed to create directory: " + directoryPath);
             }

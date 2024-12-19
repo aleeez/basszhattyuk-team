@@ -1,10 +1,13 @@
 package org.dn.team.basszhattyuk.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.dn.team.basszhattyuk.dto.incoming.PlayerInDTO;
-import org.dn.team.basszhattyuk.dto.outgoing.PlayerAdminDTO;
+import org.dn.team.basszhattyuk.dto.incoming.PlayerUpdateDTO;
 import org.dn.team.basszhattyuk.dto.outgoing.PlayerSelfDTO;
 import org.dn.team.basszhattyuk.mapper.PlayerMapper;
 import org.dn.team.basszhattyuk.model.PlayerModel;
@@ -52,15 +55,14 @@ public class PlayerController {
     }
 
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PlayerSelfDTO> getPlayerById(@PathVariable("id") Long id) {
         log.info("Fetching player with ID: {}", id);
 
-        // Fetch player from the service by ID
         PlayerModel player = playerService.getPlayer(id);
 
         if (player == null) {
-            // Return 404 if the player is not found
+
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
            PlayerSelfDTO playerDTO = playerMapper.mapToPlayerSelfDto(player);
@@ -69,38 +71,67 @@ public class PlayerController {
     }
 
 
-    @GetMapping
-    public List<PlayerAdminDTO> getPlayersForAdmin() {
-        log.info("Getting players name and phone number");
-        return playerMapper.mapToPlayersAdminDto((List<PlayerModel>) playerDAO.findAll());
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PlayerSelfDTO>> getAllPlayers() {
+
+        log.info("Fetching all players");
+
+        List<PlayerModel> players = playerService.getAllPlayers();
+        List<PlayerSelfDTO> playerDTOs = playerMapper.mapToPlayersSelfDto(players);
+
+        return new ResponseEntity<>(playerDTOs, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public PlayerAdminDTO updatePlayer(@PathVariable Long id,
-                             @RequestBody @Valid PlayerInDTO playerInDTO
-    ) {
-        log.info("Updating player with id: {}", id);
-        PlayerModel player = playerMapper.mapToPlayerModel(playerInDTO);
-        player.setId(id);
-        playerDAO.save(player);
-        return playerMapper.mapToPlayerAdminDto(player);
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<PlayerSelfDTO> updatePlayer(
+            @PathVariable Long id,
+            @Valid @RequestBody PlayerUpdateDTO playerUpdateDTO) {
+        log.info("Updating player with ID: {}", id);
+
+        try {
+
+            PlayerModel updatedPlayer = playerService.updatePlayer(id, playerUpdateDTO);
+            PlayerSelfDTO responseDto = playerMapper.mapToPlayerSelfDto(updatedPlayer);
+
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+        } catch (EntityNotFoundException e) {
+            log.error("Player with ID {} not found: {}", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            log.error("Error updating player with ID {}: {}", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping(path = "/patch/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<PlayerSelfDTO> patchPlayer(@PathVariable Long id, @RequestBody JsonPatch patch) {
+        try {
+            PlayerModel patchedPlayer = playerService.patchPlayer(id, patch);
+            PlayerSelfDTO responseDto = playerMapper.mapToPlayerSelfDto(patchedPlayer);
+
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+
+
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePlayer(@PathVariable("id") Long id) {
         try {
-            // Call the deletePlayer service method
+
             playerService.deletePlayer(id);
             return new ResponseEntity<>("Player deleted successfully", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            // If the player is not found, return a 404 status
+
             return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
         } catch (IOException e) {
-            // If there is an issue with file deletion, return a 500 status
+            
             return new ResponseEntity<>("Error while deleting files", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            // Handle any unexpected errors
-            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
