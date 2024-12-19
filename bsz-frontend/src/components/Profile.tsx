@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-
-// Define the PlayerUpdateDTO interface
-interface PlayerUpdateDTO {
-  lastName: string;
-  firstName: string;
-  phoneNr: string;
-  email: string;
-  seriaNr: string;
-  fbLink: string;
-  external: boolean;
-  kmdszID: string;
-}
+import { PlayerUpdateDTO } from "../dto/PlayerUpdateDTO";
 
 // Initial mock data
 const initialPlayerData: PlayerUpdateDTO = {
@@ -24,9 +13,13 @@ const initialPlayerData: PlayerUpdateDTO = {
   kmdszID: "KMDSZ123456",
 };
 
+// Utility for formatting field labels
+const formatLabel = (label: string) =>
+  label.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
+
 // React Component
 const Profile: React.FC = () => {
-  const [isEditing, setIsEditing] = useState(false); // Edit mode toggle
+  const [isEditing, setIsEditing] = useState(false);
   const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(initialPlayerData);
   const [tempData, setTempData] = useState<PlayerUpdateDTO>(initialPlayerData);
 
@@ -55,12 +48,15 @@ const Profile: React.FC = () => {
 
       {/* Dynamic Field Display */}
       {Object.entries(playerData).map(([key, value]) => (
-        <div key={key}>
-          <h3>{key.replace(/([A-Z])/g, " $1")}:</h3>
+        <div key={key} style={{ marginBottom: "1rem" }}>
+          <label htmlFor={key} style={{ fontWeight: "bold" }}>
+            {formatLabel(key)}:
+          </label>
           {isEditing ? (
             key === "external" ? (
               <input
                 type="checkbox"
+                id={key}
                 name={key}
                 checked={(tempData as any)[key]}
                 onChange={handleChange}
@@ -68,6 +64,7 @@ const Profile: React.FC = () => {
             ) : (
               <input
                 type="text"
+                id={key}
                 name={key}
                 value={(tempData as any)[key]}
                 onChange={handleChange}

@@ -1,5 +1,5 @@
 export interface PlayerType {
-    id?: number,
+    
     lastName: string,
     firstName: string,
     phoneNr: string,
