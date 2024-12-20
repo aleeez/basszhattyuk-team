@@ -7,9 +7,11 @@ import SeriaNr from './SeriaNr';
 import FacebookLink from './FacebookLink';
 import ExternalCheckbox from './ExternalCheckbox';
 import KmdszID from './KmdszID';
-import UploadFile from './UploadFile';  // Import the UploadFile component
+import UploadFile from './UploadFile';  
+import { PlayerLabels } from '../records/inputLabels';
 
 const Register: React.FC = () => {
+  
   const [formData, setFormData] = useState<PlayerType>({
     lastName: '',
     firstName: '',
@@ -69,54 +71,58 @@ const Register: React.FC = () => {
         <Name 
           name={formData.lastName}
           setName={(value) => updateField("lastName", value)} 
-          label="Családnév"
+          label={PlayerLabels.lastName}
         />
         <Name 
           name={formData.firstName}
           setName={(value) => updateField("firstName", value)} 
-          label="Keresztnév"
+          label={PlayerLabels.firstName}
         />
         <PhoneNr 
           phone={formData.phoneNr}
           setPhone={(value) => updateField("phoneNr", value)} 
+          label={PlayerLabels.phoneNr}
         />
         <Email 
           email={formData.email}
           setEmail={(value) => updateField("email", value)} 
+          label={PlayerLabels.email}
         />
         <SeriaNr
           seria={tempData.seria}
           nr={tempData.nr}
           setSeria={(value) => updateTempField("seria", value)} 
-          setNr={(value) => updateTempField("nr", value)} 
+          setNr={(value) => updateTempField("nr", value)}
+          label={PlayerLabels.seriaNr} 
         />
         <FacebookLink
           fbLink={formData.fbLink}
           setFbLink={(value) => updateField('fbLink', value)}
+          label={PlayerLabels.fbLink}
         />
         <br />
         <ExternalCheckbox
           external={formData.external}
           setExternal={(value) => updateField('external', value)}
+          label={PlayerLabels.external}
         />
         
         {!formData.external && (
           <KmdszID
             kmdszID={tempData.kmdszID}
             setKmdszID={(value) => updateTempField('kmdszID', value)}
+            label={PlayerLabels.kmdszID}
           />
         )}
       
         <UploadFile
           id="pass"
-          name="PASS kép"
-          file={file.passPic}
+          label="PASS kép"
           setFile={(newFile) => setFile({ ...file, passPic: newFile })}
         />
         <UploadFile
           id="studid"
-          name="Ellenőrző kép"
-          file={file.studIDPic}
+          label="Ellenőrző kép"
           setFile={(newFile) => setFile({ ...file, studIDPic: newFile })}
         />
 

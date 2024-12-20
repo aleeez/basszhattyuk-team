@@ -4,9 +4,10 @@ import { validatePhoneNumber } from "../validatation/InputValidation";
 interface PhoneProps {
   phone: string;
   setPhone: (value: string) => void;
+  label: string;
 }
 
-const PhoneNr: React.FC<PhoneProps> = ({ phone, setPhone }) => {
+const PhoneNr: React.FC<PhoneProps> = ({ phone, setPhone, label }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const updatedValue = validatePhoneNumber(value);
@@ -16,7 +17,7 @@ const PhoneNr: React.FC<PhoneProps> = ({ phone, setPhone }) => {
   return (
     <div>
       <label htmlFor="phone">
-      Telefonszám: 
+      {label} 
         <input
           type="tel"
           id="phone"

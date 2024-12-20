@@ -2,12 +2,11 @@ import React from 'react';
 
 interface UploadFileProps {
   id: string;
-  name: string;
-  file: File | null;
   setFile: (file: File | null) => void;
+  label: string;
 }
 
-const UploadFile: React.FC<UploadFileProps> = ({ id, name, file, setFile }) => {
+const UploadFile: React.FC<UploadFileProps> = ({ id, setFile, label }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files && files.length > 0) {
@@ -18,7 +17,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ id, name, file, setFile }) => {
   return (
     <div>
       <label htmlFor={id}>
-        {name}:
+        {label}:
         <input 
           type="file" 
           id={id} 

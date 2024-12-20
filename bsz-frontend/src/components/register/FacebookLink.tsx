@@ -3,16 +3,17 @@ import React from 'react';
 interface FacebookLinkProps {
   fbLink: string;
   setFbLink: (value: string) => void;
+  label: string;
 }
 
-const FacebookLink: React.FC<FacebookLinkProps> = ({ fbLink, setFbLink }) => {
+const FacebookLink: React.FC<FacebookLinkProps> = ({ fbLink, setFbLink, label }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFbLink(event.target.value);
   };
 
   return (
     <label htmlFor="fblink">
-      Facebook link:
+      {label}
       <input
         type="url"
         id="fblink"

@@ -6,9 +6,10 @@ interface SeriaNrProps {
   nr: string;
   setSeria: (value: string) => void;
   setNr: (value: string) => void;
+  label: string;
 }
 
-const SeriaNr: React.FC<SeriaNrProps> = ({ seria, nr, setSeria, setNr }) => {
+const SeriaNr: React.FC<SeriaNrProps> = ({ seria, nr, setSeria, setNr, label }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     let updatedValue = validatePersonalNr(name, value);
@@ -23,7 +24,7 @@ const SeriaNr: React.FC<SeriaNrProps> = ({ seria, nr, setSeria, setNr }) => {
   return (
     <div>
       <label htmlFor="serianr">
-        Személyi szám: Seria
+        {label} Seria
         <input
           type="text"
           id="seria"

@@ -3,9 +3,10 @@ import React from 'react';
 interface KmdszIdInputProps {
   kmdszID: string;
   setKmdszID: (value: string) => void;
+  label: string;
 }
 
-const KmdszID: React.FC<KmdszIdInputProps> = ({ kmdszID, setKmdszID }) => {
+const KmdszID: React.FC<KmdszIdInputProps> = ({ kmdszID, setKmdszID, label }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKmdszID(event.target.value);
   };
@@ -13,7 +14,7 @@ const KmdszID: React.FC<KmdszIdInputProps> = ({ kmdszID, setKmdszID }) => {
   return (
     <div>     
         <label htmlFor="kmdszid">
-        A Kártya ID: <em>KMDSZ-</em>
+        {label} <em>KMDSZ-</em>
         <input
             type="text"
             id="kmdszid"

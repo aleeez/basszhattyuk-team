@@ -4,7 +4,7 @@ import './App.css';
 import HelloWorld from './components/HelloWorld';
 import Register from './components/register/Register';
 import Home from './components/Home';
-import Profile from './components/Profile';
+import Profile from './components/profile/Profile';
 
 function App() {
   return (

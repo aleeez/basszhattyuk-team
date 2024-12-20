@@ -18,7 +18,7 @@ const Name: React.FC<NameProps> = ({ name, setName, label }) => {
   return (
     <div>
       <label htmlFor={label}>
-        {label}: 
+        {label} 
         <input
           type="text"
           id={label}
