@@ -71,47 +71,47 @@ const Register: React.FC = () => {
         <Name 
           name={formData.lastName}
           setName={(value) => updateField("lastName", value)} 
-          label={PlayerLabels.lastName}
+          label={`${PlayerLabels.lastName}:`}
         />
         <Name 
           name={formData.firstName}
           setName={(value) => updateField("firstName", value)} 
-          label={PlayerLabels.firstName}
+          label={`${PlayerLabels.firstName}:`}
         />
         <PhoneNr 
           phone={formData.phoneNr}
           setPhone={(value) => updateField("phoneNr", value)} 
-          label={PlayerLabels.phoneNr}
+          label={`${PlayerLabels.phoneNr}:`}
         />
         <Email 
           email={formData.email}
           setEmail={(value) => updateField("email", value)} 
-          label={PlayerLabels.email}
+          label={`${PlayerLabels.email}:`}
         />
         <SeriaNr
           seria={tempData.seria}
           nr={tempData.nr}
           setSeria={(value) => updateTempField("seria", value)} 
           setNr={(value) => updateTempField("nr", value)}
-          label={PlayerLabels.seriaNr} 
+          label={`${PlayerLabels.seriaNr}:`}
         />
         <FacebookLink
           fbLink={formData.fbLink}
           setFbLink={(value) => updateField('fbLink', value)}
-          label={PlayerLabels.fbLink}
+          label={`${PlayerLabels.fbLink}:`}
         />
         <br />
         <ExternalCheckbox
           external={formData.external}
           setExternal={(value) => updateField('external', value)}
-          label={PlayerLabels.external}
+          label={`${PlayerLabels.external}:`}
         />
         
         {!formData.external && (
           <KmdszID
             kmdszID={tempData.kmdszID}
             setKmdszID={(value) => updateTempField('kmdszID', value)}
-            label={PlayerLabels.kmdszID}
+            label={`${PlayerLabels.kmdszID}:`}
           />
         )}
       

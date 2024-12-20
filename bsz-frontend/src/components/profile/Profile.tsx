@@ -5,7 +5,10 @@ import Email from "../register/Email";
 import FacebookLink from "../register/FacebookLink";
 import ExternalCheckbox from "../register/ExternalCheckbox";
 import Name from "../register/PlayerName";
+import KmdszID from "../register/KmdszID";
+import SeriaNr from "../register/SeriaNr";
 import { PlayerLabels } from "../records/inputLabels";
+
 
 // Initial mock data
 const initialPlayerData: PlayerUpdateDTO = {
@@ -13,13 +16,13 @@ const initialPlayerData: PlayerUpdateDTO = {
   firstName: "John",
   phoneNr: "0123456789",
   email: "john.doe@example.com",
-  seriaNr: "AB123456",
+  seriaNr: "AB 123456",
   fbLink: "https://facebook.com/john.doe",
   external: false,
-  kmdszID: "KMDSZ123456",
+  kmdszID: "123456",
 };
 
-// Component registry with labels (now using Labels from the imported file)
+// Component registry with labels
 const fieldComponents: Record<
   keyof PlayerUpdateDTO,
   {
@@ -31,10 +34,10 @@ const fieldComponents: Record<
   firstName: { label: PlayerLabels.firstName, Component: Name },
   phoneNr: { label: PlayerLabels.phoneNr, Component: PhoneNr },
   email: { label: PlayerLabels.email, Component: Email },
-  seriaNr: { label: PlayerLabels.seriaNr, Component: Name },
+  seriaNr: { label: PlayerLabels.seriaNr, Component: SeriaNr },
   fbLink: { label: PlayerLabels.fbLink, Component: FacebookLink },
   external: { label: PlayerLabels.external, Component: ExternalCheckbox },
-  kmdszID: { label: PlayerLabels.kmdszID, Component: Name },
+  kmdszID: { label: PlayerLabels.kmdszID, Component: KmdszID },
 };
 
 // React Component
@@ -48,7 +51,6 @@ const Profile: React.FC = () => {
       ...prevData,
       [field]: value,
     }));
-    
   };
 
   return (
@@ -77,7 +79,27 @@ const Profile: React.FC = () => {
             </label>
             {editingField === key ? (
               <Component
-                {...(fieldKey === "external"
+                {...(fieldKey === "phoneNr"
+                  ? {
+                      phone: value, // Pass the current value of the phone number
+                      setPhone: (val: string) => updateField(fieldKey, val),         
+                    }
+                  : fieldKey === "email"
+                  ? {
+                      email: value, // Pass the current email value
+                      setEmail: (val: string) => updateField(fieldKey, val), // Update email logic
+                    }
+                  : fieldKey === "fbLink"
+                  ? {
+                      fbLink: value, // Pass the current email value
+                      setFbLink: (val: string) => updateField(fieldKey, val), // Update email logic
+                    }
+                  : fieldKey === "kmdszID"
+                  ? {
+                      kmdszID: value, // Pass the current email value
+                      setKmdszID: (val: string) => updateField(fieldKey, val), // Update email logic
+                    }
+                  : fieldKey === "external"
                   ? {
                       external: value,
                       setExternal: (val: boolean) => updateField(fieldKey, val),

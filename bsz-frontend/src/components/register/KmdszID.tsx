@@ -14,7 +14,7 @@ const KmdszID: React.FC<KmdszIdInputProps> = ({ kmdszID, setKmdszID, label }) =>
   return (
     <div>     
         <label htmlFor="kmdszid">
-        {label} <em>KMDSZ-</em>
+        {label} <em> KMDSZ-</em>
         <input
             type="text"
             id="kmdszid"

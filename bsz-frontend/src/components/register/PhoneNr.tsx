@@ -17,7 +17,7 @@ const PhoneNr: React.FC<PhoneProps> = ({ phone, setPhone, label }) => {
   return (
     <div>
       <label htmlFor="phone">
-      {label} 
+      {label}  
         <input
           type="tel"
           id="phone"

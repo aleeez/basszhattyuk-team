@@ -24,7 +24,8 @@ const SeriaNr: React.FC<SeriaNrProps> = ({ seria, nr, setSeria, setNr, label }) 
   return (
     <div>
       <label htmlFor="serianr">
-        {label} Seria
+        {label}
+        Seria:
         <input
           type="text"
           id="seria"
@@ -35,7 +36,7 @@ const SeriaNr: React.FC<SeriaNrProps> = ({ seria, nr, setSeria, setNr, label }) 
           placeholder="XY"
           required
         />
-        Nr.
+        Nr.:
         <input
           type="text"
           id="nr"
