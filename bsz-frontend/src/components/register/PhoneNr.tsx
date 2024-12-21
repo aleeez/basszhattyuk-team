@@ -2,27 +2,27 @@ import React, { ChangeEvent } from "react";
 import { validatePhoneNumber } from "../validatation/InputValidation";
 
 interface PhoneProps {
-  phone: string;
-  setPhone: (value: string) => void;
+  fieldValue: string;
+  setFieldValue: (value: string) => void;
   label: string;
 }
 
-const PhoneNr: React.FC<PhoneProps> = ({ phone, setPhone, label }) => {
+const PhoneNr: React.FC<PhoneProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const updatedValue = validatePhoneNumber(value);
-    setPhone(updatedValue);
+    setFieldValue(updatedValue);
   };
 
   return (
     <div>
       <label htmlFor="phone">
-      {label}  
+        {label}
         <input
           type="tel"
           id="phone"
           name="phone"
-          value={phone}
+          value={fieldValue}
           minLength={10}
           placeholder="07xx xxx xxx"
           onChange={handleChange}

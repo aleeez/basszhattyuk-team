@@ -1,33 +1,32 @@
 import React from 'react';
 
 interface KmdszIdInputProps {
-  kmdszID: string;
-  setKmdszID: (value: string) => void;
+  fieldValue: string;
+  setFieldValue: (value: string) => void;
   label: string;
 }
 
-const KmdszID: React.FC<KmdszIdInputProps> = ({ kmdszID, setKmdszID, label }) => {
+const KmdszID: React.FC<KmdszIdInputProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setKmdszID(event.target.value);
+    setFieldValue(event.target.value);
   };
 
   return (
-    <div>     
-        <label htmlFor="kmdszid">
+    <div>
+      <label htmlFor="kmdszid">
         {label} <em> KMDSZ-</em>
         <input
-            type="text"
-            id="kmdszid"
-            name="kmdszID"
-            value={kmdszID}
-            onChange={handleChange}
-            minLength={6}
-            placeholder="123456"
+          type="text"
+          id="kmdszid"
+          name="kmdszID"
+          value={fieldValue}
+          onChange={handleChange}
+          minLength={6}
+          placeholder="123456"
         />
-        </label>
-        <br />
+      </label>
+      <br />
     </div>
-    
   );
 };
 

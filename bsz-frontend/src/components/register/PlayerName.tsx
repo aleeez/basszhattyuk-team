@@ -1,18 +1,17 @@
-// Name.tsx
 import React, { ChangeEvent } from "react";
 import { validateName } from "../validatation/InputValidation";
 
 interface NameProps {
-  name: string;
-  setName: (value: string) => void;
+  fieldValue: string; 
+  setFieldValue: (value: string) => void; 
   label: string;
 }
 
-const Name: React.FC<NameProps> = ({ name, setName, label }) => {
+const Name: React.FC<NameProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const updatedValue = validateName(value);
-    setName(updatedValue);
+    setFieldValue(updatedValue); 
   };
 
   return (
@@ -23,7 +22,7 @@ const Name: React.FC<NameProps> = ({ name, setName, label }) => {
           type="text"
           id={label}
           name={label}
-          value={name}
+          value={fieldValue} 
           onChange={handleChange}
           required
         />

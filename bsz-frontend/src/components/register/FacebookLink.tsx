@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface FacebookLinkProps {
-  fbLink: string;
-  setFbLink: (value: string) => void;
+  fieldValue: string;
+  setFieldValue: (value: string) => void;
   label: string;
 }
 
-const FacebookLink: React.FC<FacebookLinkProps> = ({ fbLink, setFbLink, label }) => {
+const FacebookLink: React.FC<FacebookLinkProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFbLink(event.target.value);
+    setFieldValue(event.target.value);
   };
 
   return (
@@ -18,7 +18,7 @@ const FacebookLink: React.FC<FacebookLinkProps> = ({ fbLink, setFbLink, label })
         type="url"
         id="fblink"
         name="fbLink"
-        value={fbLink}
+        value={fieldValue}
         onChange={handleChange}
         required
         placeholder="https://www.facebook.com/yourprofile"

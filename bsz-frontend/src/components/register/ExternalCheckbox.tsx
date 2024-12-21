@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface ExternalCheckboxProps {
-  external: boolean; // This will hold the boolean value
-  setExternal: (value: boolean) => void;
+  fieldValue: boolean;
+  setFieldValue: (value: boolean) => void;
   label: string;
 }
 
-const ExternalCheckbox: React.FC<ExternalCheckboxProps> = ({ external, setExternal, label }) => {
+const ExternalCheckbox: React.FC<ExternalCheckboxProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setExternal(event.target.checked);
+    setFieldValue(event.target.checked);
   };
 
   return (
@@ -18,7 +18,7 @@ const ExternalCheckbox: React.FC<ExternalCheckboxProps> = ({ external, setExtern
         type="checkbox"
         id="external"
         name="external"
-        checked={external}
+        checked={fieldValue}
         onChange={handleChange}
       />
     </label>

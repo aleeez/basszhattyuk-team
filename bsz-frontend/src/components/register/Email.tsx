@@ -1,26 +1,26 @@
 import React, { ChangeEvent } from "react";
 
 interface EmailProps {
-  email: string;
-  setEmail: (value: string) => void;
+  fieldValue: string;
+  setFieldValue: (value: string) => void;
   label: string;
 }
 
-const Email: React.FC<EmailProps> = ({ email, setEmail, label }) => {
+const Email: React.FC<EmailProps> = ({ fieldValue, setFieldValue, label }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target; 
-    setEmail(value);
+    setFieldValue(value);
   };
 
   return (
     <div>
       <label htmlFor="email">
-      {label} 
+        {label}
         <input
           type="email"
           id="email"
           name="email"
-          value={email}
+          value={fieldValue}
           placeholder="something@domain"
           onChange={handleChange}
           required

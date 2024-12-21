@@ -1,15 +1,16 @@
 import React, { ChangeEvent } from "react";
 
 interface SeriaNrProps {
+
   // Props for Register component
-  seria?: string;
-  setSeria?: (value: string) => void;
-  nr?: string;
-  setNr?: (value: string) => void;
+  seria: string;
+  setSeria: (value: string) => void;
+  nr: string;
+  setNr: (value: string) => void;
 
   // Props for Profile component
-  seriaNr?: string;
-  setSeriaNr?: (value: string) => void;
+  fieldValue?: string;
+  setFieldValue?: (value: string) => void;
 
   label: string;
 }
@@ -19,24 +20,24 @@ const SeriaNr: React.FC<SeriaNrProps> = ({
   setSeria,
   nr,
   setNr,
-  seriaNr,
-  setSeriaNr,
+  fieldValue,
+  setFieldValue,
   label,
 }) => {
-  // Derive local seria and nr for Profile mode
-  const derivedSeria = seriaNr ? seriaNr.slice(0, 2) : seria || "";
-  const derivedNr = seriaNr ? seriaNr.slice(2) : nr || "";
+  
+  const derivedSeria = fieldValue ? fieldValue.slice(0, 2) : seria || "";
+  const derivedNr = fieldValue ? fieldValue.slice(2) : nr || "";
 
   const handleSeriaChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedValue = event.target.value.toUpperCase(); // Force uppercase letters
+    const updatedValue = event.target.value.toUpperCase(); 
     if (setSeria) setSeria(updatedValue);
-    if (setSeriaNr) setSeriaNr(updatedValue + derivedNr);
+    if (setFieldValue) setFieldValue(updatedValue + derivedNr);
   };
 
   const handleNrChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedValue = event.target.value.replace(/\D/g, ""); // Only allow numbers
+    const updatedValue = event.target.value.replace(/\D/g, ""); 
     if (setNr) setNr(updatedValue);
-    if (setSeriaNr) setSeriaNr(derivedSeria + updatedValue);
+    if (setFieldValue) setFieldValue(derivedSeria + updatedValue);
   };
 
   return (
@@ -44,6 +45,7 @@ const SeriaNr: React.FC<SeriaNrProps> = ({
       <label>
         {label}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          Seria:
           <input
             type="text"
             name="seria"
@@ -54,6 +56,7 @@ const SeriaNr: React.FC<SeriaNrProps> = ({
             style={{ width: "3rem" }}
             required
           />
+          Nr.:
           <input
             type="text"
             name="nr"

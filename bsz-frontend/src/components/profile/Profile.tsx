@@ -15,19 +15,15 @@ const initialPlayerData: PlayerUpdateDTO = {
   firstName: "John",
   phoneNr: "0123456789",
   email: "john.doe@example.com",
-  seriaNr: "AB 123456",
+  seriaNr: "AB123456",
   fbLink: "https://facebook.com/john.doe",
   external: false,
   kmdszID: "123456",
 };
 
-// Component registry with labels
 const fieldComponents: Record<
   keyof PlayerUpdateDTO,
-  {
-    label: string;
-    Component: React.FC<any>;
-  }
+  { label: string; Component: React.FC<any> }
 > = {
   lastName: { label: PlayerLabels.lastName, Component: Name },
   firstName: { label: PlayerLabels.firstName, Component: Name },
@@ -39,12 +35,12 @@ const fieldComponents: Record<
   kmdszID: { label: PlayerLabels.kmdszID, Component: KmdszID },
 };
 
-// React Component
+
 const Profile: React.FC = () => {
   const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(initialPlayerData);
   const [editingField, setEditingField] = useState<string | null>(null);
 
-  // Update field in playerData
+
   const updateField = (field: keyof PlayerUpdateDTO, value: any) => {
     setPlayerData((prevData) => ({
       ...prevData,
@@ -52,22 +48,37 @@ const Profile: React.FC = () => {
     }));
   };
 
+ 
+  const renderComponent = (fieldKey: keyof PlayerUpdateDTO, value: any) => {
+    const { Component } = fieldComponents[fieldKey];
+
+   
+    const props = {
+      fieldValue: value, 
+      setFieldValue: (val: any) => updateField(fieldKey, val), 
+    };
+
+    return <Component {...props} />;
+  };
+
   return (
     <div>
       <h2>Player Profile</h2>
 
-      {/* Iterate through each field */}
       {Object.entries(playerData).map(([key, value]) => {
         const fieldKey = key as keyof PlayerUpdateDTO;
-        const { label, Component } = fieldComponents[fieldKey];
+        const { label } = fieldComponents[fieldKey];
 
         return (
-          <div key={fieldKey} style={{ marginBottom: "1rem", display: "flex", alignItems: "center" }}>
+          <div
+            key={fieldKey}
+            style={{ marginBottom: "1rem", display: "flex", alignItems: "center" }}
+          >
             <button
               onClick={() =>
                 editingField === key
-                  ? setEditingField(null) // Save and switch back to "Edit"
-                  : setEditingField(key) // Enter edit mode
+                  ? setEditingField(null) 
+                  : setEditingField(key) 
               }
               style={{ marginRight: "1rem" }}
             >
@@ -77,44 +88,8 @@ const Profile: React.FC = () => {
               {label}:
             </label>
             {editingField === key ? (
-              <Component
-                {...(fieldKey === "phoneNr"
-                  ? {
-                      phone: value, // Pass the current value of the phone number
-                      setPhone: (val: string) => updateField(fieldKey, val),
-                    }
-                  : fieldKey === "email"
-                  ? {
-                      email: value, // Pass the current email value
-                      setEmail: (val: string) => updateField(fieldKey, val),
-                    }
-                  : fieldKey === "fbLink"
-                  ? {
-                      fbLink: value, // Pass the current fbLink value
-                      setFbLink: (val: string) => updateField(fieldKey, val),
-                    }
-                  : fieldKey === "kmdszID"
-                  ? {
-                      kmdszID: value, // Pass the current kmdszID value
-                      setKmdszID: (val: string) => updateField(fieldKey, val),
-                    }
-                  : fieldKey === "seriaNr"
-                  ? {
-                      seriaNr: value, // Pass the current seriaNr value
-                      setSeriaNr: (val: string) => updateField(fieldKey, val),
-                    }
-                  : fieldKey === "external"
-                  ? {
-                      external: value, // Pass the current external value
-                      setExternal: (val: boolean) => updateField(fieldKey, val),
-                    }
-                  : {
-                      name: value,
-                      setName: (val: string) => updateField(fieldKey, val),
-                    })}
-              />
+              renderComponent(fieldKey, value) 
             ) : (
-              // Display Yes or No for external in view mode
               <div>{fieldKey === "external" ? (value ? "Yes" : "No") : String(value)}</div>
             )}
           </div>

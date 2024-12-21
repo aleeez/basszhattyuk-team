@@ -69,23 +69,23 @@ const Register: React.FC = () => {
       <p>Regisztrálj csapattagnak!</p>
       <form onSubmit={handleSubmit}>
         <Name 
-          name={formData.lastName}
-          setName={(value) => updateField("lastName", value)} 
+          fieldValue={formData.lastName}
+          setFieldValue={(value) => updateField("lastName", value)} 
           label={`${PlayerLabels.lastName}:`}
         />
         <Name 
-          name={formData.firstName}
-          setName={(value) => updateField("firstName", value)} 
+          fieldValue={formData.firstName}
+          setFieldValue={(value) => updateField("firstName", value)} 
           label={`${PlayerLabels.firstName}:`}
         />
         <PhoneNr 
-          phone={formData.phoneNr}
-          setPhone={(value) => updateField("phoneNr", value)} 
+          fieldValue={formData.phoneNr}
+          setFieldValue={(value) => updateField("phoneNr", value)} 
           label={`${PlayerLabels.phoneNr}:`}
         />
         <Email 
-          email={formData.email}
-          setEmail={(value) => updateField("email", value)} 
+          fieldValue={formData.email}
+          setFieldValue={(value) => updateField("email", value)} 
           label={`${PlayerLabels.email}:`}
         />
         <SeriaNr
@@ -96,21 +96,21 @@ const Register: React.FC = () => {
           label={`${PlayerLabels.seriaNr}:`}
         />
         <FacebookLink
-          fbLink={formData.fbLink}
-          setFbLink={(value) => updateField('fbLink', value)}
+          fieldValue={formData.fbLink}
+          setFieldValue={(value) => updateField('fbLink', value)}
           label={`${PlayerLabels.fbLink}:`}
         />
         <br />
         <ExternalCheckbox
-          external={formData.external}
-          setExternal={(value) => updateField('external', value)}
+          fieldValue={formData.external}
+          setFieldValue={(value) => updateField('external', value)}
           label={`${PlayerLabels.external}:`}
         />
         
         {!formData.external && (
           <KmdszID
-            kmdszID={tempData.kmdszID}
-            setKmdszID={(value) => updateTempField('kmdszID', value)}
+            fieldValue={tempData.kmdszID}
+            setFieldValue={(value) => updateTempField('kmdszID', value)}
             label={`${PlayerLabels.kmdszID}:`}
           />
         )}
