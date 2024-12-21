@@ -9,7 +9,6 @@ import KmdszID from "../register/KmdszID";
 import SeriaNr from "../register/SeriaNr";
 import { PlayerLabels } from "../records/inputLabels";
 
-
 // Initial mock data
 const initialPlayerData: PlayerUpdateDTO = {
   lastName: "Doe",
@@ -82,26 +81,31 @@ const Profile: React.FC = () => {
                 {...(fieldKey === "phoneNr"
                   ? {
                       phone: value, // Pass the current value of the phone number
-                      setPhone: (val: string) => updateField(fieldKey, val),         
+                      setPhone: (val: string) => updateField(fieldKey, val),
                     }
                   : fieldKey === "email"
                   ? {
                       email: value, // Pass the current email value
-                      setEmail: (val: string) => updateField(fieldKey, val), // Update email logic
+                      setEmail: (val: string) => updateField(fieldKey, val),
                     }
                   : fieldKey === "fbLink"
                   ? {
-                      fbLink: value, // Pass the current email value
-                      setFbLink: (val: string) => updateField(fieldKey, val), // Update email logic
+                      fbLink: value, // Pass the current fbLink value
+                      setFbLink: (val: string) => updateField(fieldKey, val),
                     }
                   : fieldKey === "kmdszID"
                   ? {
-                      kmdszID: value, // Pass the current email value
-                      setKmdszID: (val: string) => updateField(fieldKey, val), // Update email logic
+                      kmdszID: value, // Pass the current kmdszID value
+                      setKmdszID: (val: string) => updateField(fieldKey, val),
+                    }
+                  : fieldKey === "seriaNr"
+                  ? {
+                      seriaNr: value, // Pass the current seriaNr value
+                      setSeriaNr: (val: string) => updateField(fieldKey, val),
                     }
                   : fieldKey === "external"
                   ? {
-                      external: value,
+                      external: value, // Pass the current external value
                       setExternal: (val: boolean) => updateField(fieldKey, val),
                     }
                   : {
@@ -110,7 +114,8 @@ const Profile: React.FC = () => {
                     })}
               />
             ) : (
-              <span>{fieldKey === "external" ? (value ? "Yes" : "No") : String(value)}</span>
+              // Display Yes or No for external in view mode
+              <div>{fieldKey === "external" ? (value ? "Yes" : "No") : String(value)}</div>
             )}
           </div>
         );

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ExternalCheckboxProps {
-  external: boolean;
+  external: boolean; // This will hold the boolean value
   setExternal: (value: boolean) => void;
   label: string;
 }
