@@ -4,6 +4,7 @@ import { fieldComponents } from "../records/FieldComponent";
 import { formatPlayerData } from "../utils/FormatPlayerData"; 
 import ViewField from "./ViewField"; 
 
+// Initial mock data
 const initialPlayerData: PlayerUpdateDTO = {
   lastName: "Doe",
   firstName: "John",
@@ -18,6 +19,7 @@ const initialPlayerData: PlayerUpdateDTO = {
 const Profile: React.FC = () => {
   
   const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(formatPlayerData(initialPlayerData));
+  const [isEditing, setIsEditing] = useState<boolean>(false); 
   const [editingField, setEditingField] = useState<string | null>(null);
 
   const updateField = (field: keyof PlayerUpdateDTO, value: any) => {
@@ -27,6 +29,7 @@ const Profile: React.FC = () => {
     });
     setPlayerData(updatedData);
   };
+
 
   const renderComponent = (fieldKey: keyof PlayerUpdateDTO, value: any) => {
     const { Component } = fieldComponents[fieldKey];
@@ -43,6 +46,13 @@ const Profile: React.FC = () => {
     <div>
       <h2>Player Profile</h2>
 
+      <button
+        onClick={() => setIsEditing(!isEditing)} // Toggle edit mode
+        style={{ marginBottom: "1rem" }}
+      >
+        {isEditing ? "Cancel Edit" : "Edit Profile"}
+      </button>
+
       {Object.entries(playerData).map(([key, value]) => {
         const fieldKey = key as keyof PlayerUpdateDTO;
         const { label } = fieldComponents[fieldKey];
@@ -52,23 +62,27 @@ const Profile: React.FC = () => {
             key={fieldKey}
             style={{ marginBottom: "1rem", display: "flex", alignItems: "center" }}
           >
-            <button
-              onClick={() =>
-                editingField === key
-                  ? setEditingField(null) 
-                  : setEditingField(key) 
-              }
-              style={{ marginRight: "1rem" }}
-            >
-              {editingField === key ? "Save" : "Edit"}
-            </button>
+            {isEditing && (
+              <button
+                onClick={() =>
+                  editingField === key
+                    ? setEditingField(null) 
+                    : setEditingField(key) 
+                }
+                style={{ marginRight: "1rem" }}
+              >
+                {editingField === key ? "Save" : "Edit"}
+              </button>
+            )}
+
             <label htmlFor={key} style={{ fontWeight: "bold", marginRight: "1rem" }}>
               {label}:
             </label>
-            {editingField === key ? (
+
+            {isEditing && editingField === key ? (
               renderComponent(fieldKey, value) 
             ) : (
-              <ViewField fieldKey={fieldKey} value={value} /> 
+              <ViewField fieldKey={fieldKey} value={value} />
             )}
           </div>
         );
