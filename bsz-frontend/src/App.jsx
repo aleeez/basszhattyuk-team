@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  
 import './App.css';
 import HelloWorld from './components/HelloWorld';
-import Register from './components/register/Register';
+import Register from './components/players/register/Register';
 import Home from './components/Home';
-import Profile from './components/profile/Profile';
+import Profile from './components/players/profile/Profile';
 
 function App() {
   return (

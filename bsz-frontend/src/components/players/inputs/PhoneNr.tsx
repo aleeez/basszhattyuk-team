@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { validatePhoneNumber } from "../validatation/InputValidation";
+import { validatePhoneNumber } from "../validation/InputValidation";
 
 interface PhoneProps {
   fieldValue: string;

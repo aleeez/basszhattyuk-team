@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { PlayerType } from '../../dto/PlayerType';
-import Name from './PlayerName'; 
-import PhoneNr from './PhoneNr';
-import Email from './Email';
-import SeriaNr from './SeriaNr';
-import FacebookLink from './FacebookLink';
-import ExternalCheckbox from './ExternalCheckbox';
-import KmdszID from './KmdszID';
-import UploadFile from './UploadFile';  
-import { PlayerLabels } from '../records/inputLabels';
+import { PlayerType } from '../../../dto/PlayerType';
+import Name from '../inputs/PlayerName'; 
+import PhoneNr from '../inputs/PhoneNr';
+import Email from '../inputs/Email';
+import SeriaNr from '../inputs/SeriaNr';
+import FacebookLink from '../inputs/FacebookLink';
+import ExternalCheckbox from '../inputs/ExternalCheckbox';
+import KmdszID from '../inputs/KmdszID';
+import UploadFile from '../inputs/UploadFile';  
+import { PlayerLabels } from '../../../labels/inputLabels';
 
 const Register: React.FC = () => {
   

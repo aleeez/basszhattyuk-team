@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { validateName } from "../validatation/InputValidation";
+import { validateName } from "../validation/InputValidation";
 
 interface NameProps {
   fieldValue: string; 

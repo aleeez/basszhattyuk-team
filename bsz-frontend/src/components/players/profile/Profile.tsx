@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import { PlayerUpdateDTO } from "../../dto/PlayerUpdateDTO";
-import PhoneNr from "../register/PhoneNr";
-import Email from "../register/Email";
-import FacebookLink from "../register/FacebookLink";
-import ExternalCheckbox from "../register/ExternalCheckbox";
-import Name from "../register/PlayerName";
-import KmdszID from "../register/KmdszID";
-import SeriaNr from "../register/SeriaNr";
-import { PlayerLabels } from "../records/inputLabels";
+import { PlayerUpdateDTO } from "../../../dto/PlayerUpdateDTO";
+import { fieldComponents } from "../records/FieldComponent";
+import { formatPlayerData } from "../utils/FormatPlayerData"; 
+import ViewField from "./ViewField"; 
 
-// Initial mock data
 const initialPlayerData: PlayerUpdateDTO = {
   lastName: "Doe",
   firstName: "John",
@@ -21,41 +15,25 @@ const initialPlayerData: PlayerUpdateDTO = {
   kmdszID: "123456",
 };
 
-const fieldComponents: Record<
-  keyof PlayerUpdateDTO,
-  { label: string; Component: React.FC<any> }
-> = {
-  lastName: { label: PlayerLabels.lastName, Component: Name },
-  firstName: { label: PlayerLabels.firstName, Component: Name },
-  phoneNr: { label: PlayerLabels.phoneNr, Component: PhoneNr },
-  email: { label: PlayerLabels.email, Component: Email },
-  seriaNr: { label: PlayerLabels.seriaNr, Component: SeriaNr },
-  fbLink: { label: PlayerLabels.fbLink, Component: FacebookLink },
-  external: { label: PlayerLabels.external, Component: ExternalCheckbox },
-  kmdszID: { label: PlayerLabels.kmdszID, Component: KmdszID },
-};
-
-
 const Profile: React.FC = () => {
-  const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(initialPlayerData);
+  
+  const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(formatPlayerData(initialPlayerData));
   const [editingField, setEditingField] = useState<string | null>(null);
 
-
   const updateField = (field: keyof PlayerUpdateDTO, value: any) => {
-    setPlayerData((prevData) => ({
-      ...prevData,
+    const updatedData = formatPlayerData({
+      ...playerData,
       [field]: value,
-    }));
+    });
+    setPlayerData(updatedData);
   };
 
- 
   const renderComponent = (fieldKey: keyof PlayerUpdateDTO, value: any) => {
     const { Component } = fieldComponents[fieldKey];
 
-   
     const props = {
-      fieldValue: value, 
-      setFieldValue: (val: any) => updateField(fieldKey, val), 
+      fieldValue: value,
+      setFieldValue: (val: any) => updateField(fieldKey, val),
     };
 
     return <Component {...props} />;
@@ -90,7 +68,7 @@ const Profile: React.FC = () => {
             {editingField === key ? (
               renderComponent(fieldKey, value) 
             ) : (
-              <div>{fieldKey === "external" ? (value ? "Yes" : "No") : String(value)}</div>
+              <ViewField fieldKey={fieldKey} value={value} /> 
             )}
           </div>
         );
