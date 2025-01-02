@@ -9,6 +9,13 @@ export const usePlayers = () => {
       return response.data;
     });
   };
+
+  export const usePlayer = () => {
+    return useQuery<PlayerType[]>('players', async () => {
+      const response = await axios.get('http://localhost:8080/players/profile/4');
+      return response.data;
+    });
+  };
   
   
   export const useCreatePlayer = () => {
