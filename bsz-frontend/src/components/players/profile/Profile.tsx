@@ -4,7 +4,7 @@ import { fieldComponents } from "../records/FieldComponent";
 import { formatPlayerData } from "../utils/FormatPlayerData";
 import ViewField from "./ViewField";
 import { usePlayer } from "../../../hooks/usePlayer"; 
-import { mapToDisplayedProfile } from "../utils/MapPlayerData";
+import { buildPatchPayload, mapToDisplayedProfile } from "../utils/MapPlayerData";
 
 const Profile: React.FC = () => {
   // Fetch player data using the custom hook
@@ -12,6 +12,8 @@ const Profile: React.FC = () => {
   const [formattedPlayerData, setFormattedPlayerData] = useState<PlayerDisplayedProfileDTO | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [editedFields, setEditedFields] = useState<Record<string, any>>({});
+
 
   // Format player data once it's fetched
   useEffect(() => {
@@ -20,6 +22,14 @@ const Profile: React.FC = () => {
     }
   }, [playerData]);
 
+  const handleFieldChange = (fieldKey: string, newValue: any) => {
+    setEditedFields((prevState) => ({
+      ...prevState,
+      [fieldKey]: newValue,  // Update only the changed field
+    }));
+  };
+  
+
   const updateField = (field: keyof PlayerDisplayedProfileDTO, value: any) => {
     if (formattedPlayerData) {
       const updatedData = formatPlayerData({
@@ -27,6 +37,7 @@ const Profile: React.FC = () => {
         [field]: value,
       });
       setFormattedPlayerData(updatedData);
+      handleFieldChange(field, value);
     }
   };
 
@@ -39,6 +50,17 @@ const Profile: React.FC = () => {
     };
 
     return <Component {...props} />;
+  };
+
+  const handleChanges = async () => {
+    if (!formattedPlayerData || !editedFields || Object.keys(editedFields).length === 0) {
+      // No changes, return early
+      return;
+    }
+  
+    // Use the utility function to build the patch payload
+    const patchPayload = buildPatchPayload(editedFields);
+    console.log(patchPayload);
   };
 
   // Handle loading and error states
@@ -59,7 +81,16 @@ const Profile: React.FC = () => {
       <h2>Player Profile</h2>
 
       <button
-        onClick={() => setIsEditing(!isEditing)} // Toggle edit mode
+        onClick={() => {
+          if (isEditing) {
+            // Cancel editing and handle the changes
+            setIsEditing(false);  // Turn off editing mode
+            handleChanges();  // Send changes to the backend
+          } else {
+            // Start editing mode
+            setIsEditing(true);  // Turn on editing mode
+          }
+        }}
         style={{ marginBottom: "1rem" }}
       >
         {isEditing ? "Cancel Edit" : "Edit Profile"}

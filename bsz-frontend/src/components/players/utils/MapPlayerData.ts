@@ -5,4 +5,14 @@ export const mapToDisplayedProfile = (playerProfile: PlayerProfileDTO): PlayerDi
     const { id, ...rest } = playerProfile; 
     return rest; 
   };
+
+  export const buildPatchPayload = (editedFields: Record<string, any>): { op: string, path: string, value: any }[] => {
+    return Object.entries(editedFields).map(([fieldKey, newValue]) => {
+      return {
+        op: "replace", 
+        path: `/${fieldKey}`, 
+        value: newValue, 
+      };
+    });
+  };
   
