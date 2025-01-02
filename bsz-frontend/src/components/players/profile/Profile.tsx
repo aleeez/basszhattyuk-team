@@ -1,37 +1,36 @@
-import React, { useState } from "react";
-import { PlayerUpdateDTO } from "../../../dto/PlayerUpdateDTO";
+import React, { useState, useEffect } from "react";
+import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { fieldComponents } from "../records/FieldComponent";
-import { formatPlayerData } from "../utils/FormatPlayerData"; 
-import ViewField from "./ViewField"; 
-
-// Initial mock data
-const initialPlayerData: PlayerUpdateDTO = {
-  lastName: "Doe",
-  firstName: "John",
-  phoneNr: "0123456789",
-  email: "john.doe@example.com",
-  seriaNr: "AB123456",
-  fbLink: "https://facebook.com/john.doe",
-  external: false,
-  kmdszID: "123456",
-};
+import { formatPlayerData } from "../utils/FormatPlayerData";
+import ViewField from "./ViewField";
+import { usePlayer } from "../../../hooks/usePlayer"; 
+import { mapToDisplayedProfile } from "../utils/MapPlayerData";
 
 const Profile: React.FC = () => {
-  
-  const [playerData, setPlayerData] = useState<PlayerUpdateDTO>(formatPlayerData(initialPlayerData));
-  const [isEditing, setIsEditing] = useState<boolean>(false); 
+  // Fetch player data using the custom hook
+  const { data: playerData, isLoading, isError } = usePlayer();
+  const [formattedPlayerData, setFormattedPlayerData] = useState<PlayerDisplayedProfileDTO | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingField, setEditingField] = useState<string | null>(null);
 
-  const updateField = (field: keyof PlayerUpdateDTO, value: any) => {
-    const updatedData = formatPlayerData({
-      ...playerData,
-      [field]: value,
-    });
-    setPlayerData(updatedData);
+  // Format player data once it's fetched
+  useEffect(() => {
+    if (playerData) {
+      setFormattedPlayerData(formatPlayerData(mapToDisplayedProfile(playerData)));
+    }
+  }, [playerData]);
+
+  const updateField = (field: keyof PlayerDisplayedProfileDTO, value: any) => {
+    if (formattedPlayerData) {
+      const updatedData = formatPlayerData({
+        ...formattedPlayerData,
+        [field]: value,
+      });
+      setFormattedPlayerData(updatedData);
+    }
   };
 
-
-  const renderComponent = (fieldKey: keyof PlayerUpdateDTO, value: any) => {
+  const renderComponent = (fieldKey: keyof PlayerDisplayedProfileDTO, value: any) => {
     const { Component } = fieldComponents[fieldKey];
 
     const props = {
@@ -41,6 +40,19 @@ const Profile: React.FC = () => {
 
     return <Component {...props} />;
   };
+
+  // Handle loading and error states
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading player data.</div>;
+  }
+
+  if (!formattedPlayerData) {
+    return <div>No player data available.</div>;
+  }
 
   return (
     <div>
@@ -53,8 +65,9 @@ const Profile: React.FC = () => {
         {isEditing ? "Cancel Edit" : "Edit Profile"}
       </button>
 
-      {Object.entries(playerData).map(([key, value]) => {
-        const fieldKey = key as keyof PlayerUpdateDTO;
+      {
+        Object.entries(formattedPlayerData).map(([key, value]) => {
+        const fieldKey = key as keyof PlayerDisplayedProfileDTO;
         const { label } = fieldComponents[fieldKey];
 
         return (
@@ -66,8 +79,8 @@ const Profile: React.FC = () => {
               <button
                 onClick={() =>
                   editingField === key
-                    ? setEditingField(null) 
-                    : setEditingField(key) 
+                    ? setEditingField(null)
+                    : setEditingField(key)
                 }
                 style={{ marginRight: "1rem" }}
               >
@@ -80,7 +93,7 @@ const Profile: React.FC = () => {
             </label>
 
             {isEditing && editingField === key ? (
-              renderComponent(fieldKey, value) 
+              renderComponent(fieldKey, value)
             ) : (
               <ViewField fieldKey={fieldKey} value={value} />
             )}

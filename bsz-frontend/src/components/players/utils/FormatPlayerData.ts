@@ -1,6 +1,6 @@
-import { PlayerUpdateDTO } from "../../../dto/PlayerUpdateDTO";
+import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 
-export const formatPlayerData = (data: PlayerUpdateDTO): PlayerUpdateDTO => {
+export const formatPlayerData = (data: PlayerDisplayedProfileDTO): PlayerDisplayedProfileDTO => {
     return {
       ...data,
       phoneNr: formatPhoneNumber(data.phoneNr),

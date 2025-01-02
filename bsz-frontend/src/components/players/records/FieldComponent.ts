@@ -1,4 +1,4 @@
-import { PlayerUpdateDTO } from "../../../dto/PlayerUpdateDTO";
+import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { PlayerLabels } from "../../../labels/inputLabels";
 import Email from "../inputs/Email";
 import ExternalCheckbox from "../inputs/ExternalCheckbox";
@@ -9,7 +9,7 @@ import Name from "../inputs/PlayerName";
 import SeriaNr from "../inputs/SeriaNr";
 
 export const fieldComponents: Record<
-  keyof PlayerUpdateDTO,
+  keyof PlayerDisplayedProfileDTO,
   { label: string; Component: React.FC<any> }
 > = {
   lastName: { label: PlayerLabels.lastName, Component: Name },

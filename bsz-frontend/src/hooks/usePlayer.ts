@@ -2,6 +2,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { PlayerType } from '../dto/PlayerType';
+import { PlayerProfileDTO } from '../dto/PlayerUpdateDTO';
 
 export const usePlayers = () => {
     return useQuery<PlayerType[]>('players', async () => {
@@ -11,7 +12,7 @@ export const usePlayers = () => {
   };
 
   export const usePlayer = () => {
-    return useQuery<PlayerType[]>('players', async () => {
+    return useQuery<PlayerProfileDTO>('players', async () => {
       const response = await axios.get('http://localhost:8080/players/profile/4');
       return response.data;
     });

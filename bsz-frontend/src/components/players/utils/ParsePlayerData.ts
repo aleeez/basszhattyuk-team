@@ -1,7 +1,7 @@
-import { PlayerUpdateDTO } from "../../../dto/PlayerUpdateDTO";
+import { PlayerProfileDTO } from "../../../dto/PlayerUpdateDTO";
 
 
-export const parsePlayerData = (data: PlayerUpdateDTO): PlayerUpdateDTO => {
+export const parsePlayerData = (data: PlayerProfileDTO): PlayerProfileDTO => {
     return {
       ...data,
       phoneNr: parsePhoneNumber(data.phoneNr),

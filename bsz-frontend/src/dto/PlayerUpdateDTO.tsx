@@ -1,5 +1,6 @@
-export interface PlayerUpdateDTO {
+export interface PlayerProfileDTO {
     
+    id: number,
     lastName: string,
     firstName: string,
     phoneNr: string,
@@ -10,3 +11,5 @@ export interface PlayerUpdateDTO {
     kmdszID: string,
  
 }
+
+export type PlayerDisplayedProfileDTO = Omit<PlayerProfileDTO, 'id'>;
