@@ -1,3 +1,4 @@
+import { PatchPayloadDTO } from "../../../dto/PatchPayloadDTO";
 import { PlayerDisplayedProfileDTO, PlayerProfileDTO } from "../../../dto/PlayerUpdateDTO";
 
 
@@ -6,7 +7,7 @@ export const mapToDisplayedProfile = (playerProfile: PlayerProfileDTO): PlayerDi
     return rest; 
   };
 
-  export const buildPatchPayload = (editedFields: Record<string, any>): { op: string, path: string, value: any }[] => {
+  export const buildPatchPayload = (editedFields: Record<string, any>): PatchPayloadDTO[] => {
     return Object.entries(editedFields).map(([fieldKey, newValue]) => {
       return {
         op: "replace", 

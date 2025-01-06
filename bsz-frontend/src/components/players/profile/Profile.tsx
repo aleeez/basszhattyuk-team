@@ -4,6 +4,7 @@ import { formatPlayerData } from "../utils/FormatPlayerData";
 import { usePatchPlayer, usePlayer } from "../../../hooks/usePlayer";
 import { buildPatchPayload, mapToDisplayedProfile } from "../utils/MapPlayerData";
 import InputList from "./InputList";
+import { PatchPayloadDTO } from "../../../dto/PatchPayloadDTO";
 
 const Profile: React.FC = () => {
   const { data: playerData, isLoading, isError } = usePlayer();
@@ -24,7 +25,7 @@ const Profile: React.FC = () => {
       return;
     }
 
-    const patchPayload: any = buildPatchPayload(editedFields);
+    const patchPayload: PatchPayloadDTO[] = buildPatchPayload(editedFields);
     console.log(patchPayload);
     patchPlayer.mutate(patchPayload);
 

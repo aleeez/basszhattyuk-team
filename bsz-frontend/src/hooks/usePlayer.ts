@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { PlayerType } from '../dto/PlayerType';
 import { PlayerProfileDTO } from '../dto/PlayerUpdateDTO';
+import { PatchPayloadDTO } from '../dto/PatchPayloadDTO';
 
 export const usePlayers = () => {
     return useQuery<PlayerType[]>('players', async () => {
@@ -62,7 +63,7 @@ export const usePlayers = () => {
   
     return useMutation(
       
-      ( data  : any) => axios.patch(`http://localhost:8080/players/patch/4`, data, {
+      ( data  : PatchPayloadDTO[]) => axios.patch(`http://localhost:8080/players/patch/4`, data, {
         headers: {
           'Content-Type': 'application/json-patch+json',
         },
