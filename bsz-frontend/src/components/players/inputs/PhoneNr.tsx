@@ -16,12 +16,12 @@ const PhoneNr: React.FC<PhoneProps> = ({ fieldValue, setFieldValue, label }) => 
 
   return (
     <div>
-      <label htmlFor="phone">
+      <label htmlFor="phoneNr">
         {label}
         <input
           type="tel"
-          id="phone"
-          name="phone"
+          id="phoneNr"
+          name="phoneNr"
           value={fieldValue}
           minLength={10}
           placeholder="07xx xxx xxx"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { formatPlayerData } from "../utils/FormatPlayerData";
-import { usePlayer } from "../../../hooks/usePlayer";
+import { usePatchPlayer, usePlayer } from "../../../hooks/usePlayer";
 import { buildPatchPayload, mapToDisplayedProfile } from "../utils/MapPlayerData";
 import InputList from "./InputList";
 
@@ -10,6 +10,7 @@ const Profile: React.FC = () => {
   const [formattedPlayerData, setFormattedPlayerData] = useState<PlayerDisplayedProfileDTO | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedFields, setEditedFields] = useState<Record<string, any>>({});
+  const patchPlayer = usePatchPlayer();
 
   useEffect(() => {
     if (playerData) {
@@ -23,18 +24,52 @@ const Profile: React.FC = () => {
       return;
     }
 
-    const patchPayload = buildPatchPayload(editedFields);
+    const patchPayload: any = buildPatchPayload(editedFields);
     console.log(patchPayload);
+    patchPlayer.mutate(patchPayload);
+
   };
 
   const toggleEditingMode = () => {
+    const validateInputs = (): boolean => {
+      let isValid = true;
+      
+      // Iterate over the edited fields and check their validity
+      Object.entries(editedFields).forEach(([key, value]) => {
+        // Find the input element associated with the field
+        const inputElement: HTMLInputElement | null = document.querySelector("#phoneNr");
+        console.log(inputElement);
+  
+        if (inputElement && !inputElement.checkValidity()) {
+          console.log("invalid");
+          isValid = false;
+          // Optionally, you can add a visual indication of the error on the input field
+          inputElement.setCustomValidity("This field is required");  // Customize this validation message
+        } else if (inputElement) {
+          // Reset the custom validity message if the input is valid
+          inputElement.setCustomValidity('haha');
+          console.log("valid");
+        }
+        else {
+          console.log("tfffff");
+        }
+      });
+  
+      console.log(isValid);
+      return isValid;
+    };
+  
     if (isEditing) {
-      setIsEditing(false);
-      handleChanges();
+      // Only turn off editing mode if the inputs are valid
+      if (validateInputs()) {
+        setIsEditing(false);
+        handleChanges();
+      }
     } else {
       setIsEditing(true);
     }
   };
+  
 
   const getEditButtonText = () => {
     return isEditing ? "Cancel Edit" : "Edit Profile";

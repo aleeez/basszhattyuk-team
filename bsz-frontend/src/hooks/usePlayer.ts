@@ -54,4 +54,25 @@ export const usePlayers = () => {
       },
     );
   };
+
+  
+  export const usePatchPlayer = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+  
+    return useMutation(
+      
+      ( data  : any) => axios.patch(`http://localhost:8080/players/patch/4`, data, {
+        headers: {
+          'Content-Type': 'application/json-patch+json',
+        },
+      }) ,
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('players');
+          navigate('/profile');
+        },
+      }
+    );
+  };
   
