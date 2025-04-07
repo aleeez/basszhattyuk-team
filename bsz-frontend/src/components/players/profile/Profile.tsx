@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { formatPlayerData } from "../utils/FormatPlayerData";
 import { usePatchPlayer, usePlayer } from "../../../hooks/usePlayer";
@@ -13,99 +14,67 @@ const Profile: React.FC = () => {
   const [editedFields, setEditedFields] = useState<Record<string, any>>({});
   const patchPlayer = usePatchPlayer();
 
+  const methods = useForm({ mode: "onChange" });
+
   useEffect(() => {
     if (playerData) {
-      setFormattedPlayerData(formatPlayerData(mapToDisplayedProfile(playerData)));
+      const formatted = formatPlayerData(mapToDisplayedProfile(playerData));
+      setFormattedPlayerData(formatted);
+      methods.reset(formatted); // populate default values in form
     }
   }, [playerData]);
 
-
-  const handleChanges = async () => {
-    if (!formattedPlayerData || !editedFields || Object.keys(editedFields).length === 0) {
-      return;
-    }
-
-    const patchPayload: PatchPayloadDTO[] = buildPatchPayload(editedFields);
-    console.log(patchPayload);
-    patchPlayer.mutate(patchPayload);
-
-  };
-
-  const toggleEditingMode = () => {
-    const validateInputs = (): boolean => {
-      let isValid = true;
-      
-      // Iterate over the edited fields and check their validity
-      Object.entries(editedFields).forEach(([key, value]) => {
-        // Find the input element associated with the field
-        const inputElement: HTMLInputElement | null = document.querySelector("#phoneNr");
-        console.log(inputElement);
-  
-        if (inputElement && !inputElement.checkValidity()) {
-          console.log("invalid");
-          isValid = false;
-          // Optionally, you can add a visual indication of the error on the input field
-          inputElement.setCustomValidity("This field is required");  // Customize this validation message
-        } else if (inputElement) {
-          // Reset the custom validity message if the input is valid
-          inputElement.setCustomValidity('haha');
-          console.log("valid");
-        }
-        else {
-          console.log("tfffff");
-        }
-      });
-  
-      console.log(isValid);
-      return isValid;
-    };
-  
+  const toggleEditingMode = async () => {
     if (isEditing) {
-      // Only turn off editing mode if the inputs are valid
-      if (validateInputs()) {
-        setIsEditing(false);
-        handleChanges();
+      const isValid = await methods.trigger(); // validate all fields
+
+      if (!isValid) {
+        console.log("Validation failed. Cannot exit editing mode.");
+  
+        return;
       }
+
+      if (!formattedPlayerData || Object.keys(editedFields).length === 0) {
+        console.log("No changes detected.");
+        setIsEditing(false);
+        return;
+      }
+
+      const patchPayload: PatchPayloadDTO[] = buildPatchPayload(editedFields);
+      console.log("Patch Payload:", patchPayload);
+
+      // You could send it here: patchPlayer.mutate(patchPayload);
+      setIsEditing(false);
     } else {
       setIsEditing(true);
     }
   };
-  
 
   const getEditButtonText = () => {
-    return isEditing ? "Cancel Edit" : "Edit Profile";
+    return isEditing ? "Save & Exit" : "Edit Profile";
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading player data.</div>;
-  }
-
-  if (!formattedPlayerData) {
-    return <div>No player data available.</div>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading player data.</div>;
+  if (!formattedPlayerData) return <div>No player data available.</div>;
 
   return (
-    <div>
-      <h2>Player Profile</h2>
+    <FormProvider {...methods}>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <h2>Player Profile</h2>
 
-      <button
-        onClick={toggleEditingMode}
-        style={{ marginBottom: "1rem" }}
-      >
-        {getEditButtonText()}
-      </button>
+        <button onClick={toggleEditingMode} style={{ marginBottom: "1rem" }}>
+          {getEditButtonText()}
+        </button>
 
-      <InputList
-        formattedPlayerData={formattedPlayerData}
-        isEditing={isEditing}
-        setFormattedPlayerData={setFormattedPlayerData}  
-        setEditedFields={setEditedFields}  
-      />
-    </div>
+        <InputList
+          formattedPlayerData={formattedPlayerData}
+          isEditing={isEditing}
+          setFormattedPlayerData={setFormattedPlayerData}
+          setEditedFields={setEditedFields}
+        />
+      </form>
+    </FormProvider>
   );
 };
 

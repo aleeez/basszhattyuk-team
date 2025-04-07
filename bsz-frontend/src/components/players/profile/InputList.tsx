@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { fieldComponents } from "../records/FieldComponent";
 import ViewField from "./ViewField";
@@ -7,7 +8,7 @@ interface InputListProps {
   formattedPlayerData: PlayerDisplayedProfileDTO;
   isEditing: boolean;
   setFormattedPlayerData: (data: PlayerDisplayedProfileDTO) => void;
-  setEditedFields: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  setEditedFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
 }
 
 const InputList: React.FC<InputListProps> = ({
@@ -17,17 +18,15 @@ const InputList: React.FC<InputListProps> = ({
   setEditedFields,
 }) => {
   const [editingField, setEditingField] = useState<string | null>(null);
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
-  // editing field on/off
   const toggleEditingField = (key: string) => {
-    if (editingField === key) {
-      setEditingField(null);
-    } else {
-      setEditingField(key);
-    }
+    setEditingField(editingField === key ? null : key);
   };
 
-  // memorize editied fields
   const handleFieldChange = (fieldKey: string, newValue: any) => {
     setEditedFields((prevState) => ({
       ...prevState,
@@ -35,12 +34,10 @@ const InputList: React.FC<InputListProps> = ({
     }));
   };
 
-  // button text
   const getFieldButtonText = (key: string): "Save" | "Edit" => {
     return editingField === key ? "Save" : "Edit";
   };
 
-  // render components
   const renderComponent = (fieldKey: string, value: any) => {
     const { Component } = fieldComponents[fieldKey as keyof PlayerDisplayedProfileDTO];
 
@@ -51,9 +48,11 @@ const InputList: React.FC<InputListProps> = ({
           ...formattedPlayerData,
           [fieldKey]: val,
         };
-        setFormattedPlayerData(updatedData); 
-        handleFieldChange(fieldKey as keyof PlayerDisplayedProfileDTO, val); 
+        setFormattedPlayerData(updatedData);
+        handleFieldChange(fieldKey, val);
       },
+      register: register(fieldKey),
+      error: errors[fieldKey]?.message,
     };
 
     return <Component {...props} />;
@@ -68,18 +67,15 @@ const InputList: React.FC<InputListProps> = ({
         return (
           <div
             key={key}
-            style={{ marginBottom: "1rem", display: "flex", alignItems: "center" }}
+            style={{ marginBottom: "1rem", display: "flex", alignItems: "center", gap: "1rem" }}
           >
             {isEditing && (
-              <button
-                onClick={() => toggleEditingField(key)}
-                style={{ marginRight: "1rem" }}
-              >
+              <button type="button" onClick={() => toggleEditingField(key)}>
                 {getFieldButtonText(key)}
               </button>
             )}
 
-            <label htmlFor={key} style={{ fontWeight: "bold", marginRight: "1rem" }}>
+            <label htmlFor={key} style={{ fontWeight: "bold" }}>
               {label}:
             </label>
 
