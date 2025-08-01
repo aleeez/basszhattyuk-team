@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { PlayerDisplayedProfileDTO } from "../../../dto/PlayerUpdateDTO";
 import { formatPlayerData } from "../utils/FormatPlayerData";
 import { usePatchPlayer, usePlayer } from "../../../hooks/usePlayer";
 import { buildPatchPayload, mapToDisplayedProfile } from "../utils/MapPlayerData";
 import InputList from "./InputList";
 import { PatchPayloadDTO } from "../../../dto/PatchPayloadDTO";
+import { playerSchema } from "../validation/yupschema";
 
 const Profile: React.FC = () => {
   const { data: playerData, isLoading, isError } = usePlayer();
@@ -14,7 +16,9 @@ const Profile: React.FC = () => {
   const [editedFields, setEditedFields] = useState<Record<string, any>>({});
   const patchPlayer = usePatchPlayer();
 
-  const methods = useForm({ mode: "onChange" });
+  const methods = useForm({ 
+    mode: "onSubmit",
+    resolver: yupResolver(playerSchema) });
 
   useEffect(() => {
     if (playerData) {

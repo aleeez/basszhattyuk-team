@@ -81,7 +81,7 @@ const Register: React.FC = () => {
         <PhoneNr 
           fieldValue={formData.phoneNr}
           setFieldValue={(value) => updateField("phoneNr", value)} 
-          label={`${PlayerLabels.phoneNr}:`}
+          //label={`${PlayerLabels.phoneNr}:`}
         />
         <Email 
           fieldValue={formData.email}

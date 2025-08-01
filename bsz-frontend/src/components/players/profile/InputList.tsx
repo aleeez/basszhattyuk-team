@@ -20,12 +20,22 @@ const InputList: React.FC<InputListProps> = ({
   const [editingField, setEditingField] = useState<string | null>(null);
   const {
     register,
+    trigger,
     formState: { errors },
   } = useFormContext();
 
-  const toggleEditingField = (key: string) => {
-    setEditingField(editingField === key ? null : key);
-  };
+  const toggleEditingField = async (key: string) => {
+  if (editingField === key) {
+    const isValid = await trigger(key as keyof PlayerDisplayedProfileDTO);
+    if (isValid) {
+      setEditingField(null);
+    } else {
+      console.log("Validation failed");
+    }
+  } else {
+    setEditingField(key);
+  }
+};
 
   const handleFieldChange = (fieldKey: string, newValue: any) => {
     setEditedFields((prevState) => ({
