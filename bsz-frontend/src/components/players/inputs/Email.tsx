@@ -4,9 +4,12 @@ interface EmailProps {
   fieldValue: string;
   setFieldValue: (value: string) => void;
   label: string;
+  error?: string;
+  register: any;
 }
 
-const Email: React.FC<EmailProps> = ({ fieldValue, setFieldValue, label }) => {
+const Email: React.FC<EmailProps> = ({ fieldValue, setFieldValue, label, register, error }) => {
+   const {ref, ...rest} = register;
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target; 
     setFieldValue(value);
@@ -17,6 +20,8 @@ const Email: React.FC<EmailProps> = ({ fieldValue, setFieldValue, label }) => {
       <label htmlFor="email">
         {label}
         <input
+          {...rest}
+          ref={ref}
           type="email"
           id="email"
           name="email"
@@ -26,6 +31,7 @@ const Email: React.FC<EmailProps> = ({ fieldValue, setFieldValue, label }) => {
           required
         />
       </label>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

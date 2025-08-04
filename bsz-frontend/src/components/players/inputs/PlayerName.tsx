@@ -5,9 +5,12 @@ interface NameProps {
   fieldValue: string; 
   setFieldValue: (value: string) => void; 
   label: string;
+  error?: string;
+  register: any;
 }
 
-const Name: React.FC<NameProps> = ({ fieldValue, setFieldValue, label }) => {
+const Name: React.FC<NameProps> = ({ fieldValue, setFieldValue, label, error, register }) => {
+  const {ref, ...rest} = register;
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const updatedValue = validateName(value);
@@ -16,17 +19,21 @@ const Name: React.FC<NameProps> = ({ fieldValue, setFieldValue, label }) => {
 
   return (
     <div>
-      <label htmlFor={label}>
+      <label htmlFor="lastName">
+        {label}
         {label}
         <input
+          {...rest}
+          ref={ref}
           type="text"
-          id={label}
-          name={label}
+          id="lastName"
+          name="lastName"
           value={fieldValue} 
           onChange={handleChange}
           required
         />
       </label>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

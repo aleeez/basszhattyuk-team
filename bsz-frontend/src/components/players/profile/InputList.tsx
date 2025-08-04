@@ -22,12 +22,15 @@ const InputList: React.FC<InputListProps> = ({
     register,
     trigger,
     formState: { errors },
+    getValues
   } = useFormContext();
 
   const toggleEditingField = async (key: string) => {
   if (editingField === key) {
     const isValid = await trigger(key as keyof PlayerDisplayedProfileDTO);
     if (isValid) {
+      const value = getValues(key as keyof PlayerDisplayedProfileDTO); // get the value
+      console.log("valid: ", value);
       setEditingField(null);
     } else {
       console.log("Validation failed");
